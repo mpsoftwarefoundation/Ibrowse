@@ -1,6 +1,7 @@
 from src.imports import *
 from src.gui.widgets import SearchBar, EngineTypeCombo, ContextMenu
 from src.gui.dialogs import PasswordsDialog, GetBookmarkDialog
+from urllib.parse import urlparse
 
 
 class Tab(QWidget):
@@ -52,6 +53,7 @@ class Tab(QWidget):
         self._browser.urlChanged.connect(self._search_bar.setUrl)
         self._browser.titleChanged.connect(self.updateTab)
         self._browser.iconChanged.connect(self.updateTab)
+        self._browser.loadFinished.connect(self.tryAutoFillPassword)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
         reload_btn.clicked.connect(self._browser.reload)
@@ -168,6 +170,59 @@ class Tab(QWidget):
 
         menu.removeAction(action)
         self._search_bar.updateCompleter()
+
+    def tryAutoFillPassword(self, ok: bool):
+        if not ok:
+            return
+
+        full_url = self._browser.url().toString()
+        parsed = urlparse(full_url)
+        netloc = parsed.netloc.lower()
+        base_url = f"{parsed.scheme}://{netloc}"
+
+        passwords = ibrowse.passwords()
+        creds = None
+
+        if full_url in passwords:
+            creds = passwords[full_url]
+
+        elif base_url in passwords:
+            creds = passwords[base_url]
+
+        else:
+            for key in passwords:
+                if key in full_url:
+                    creds = passwords[key]
+                    break
+
+        if not creds:
+            return
+
+        username, password = creds
+
+        js = f"""
+        (function autoFill(retries = 20) {{
+            if (retries === 0) return;
+
+            const inputs = document.querySelectorAll('input');
+            let userField = null, passField = null;
+
+            for (let i = 0; i < inputs.length; i++) {{
+                const type = inputs[i].type.toLowerCase();
+                if (!userField && (type === 'text' || type === 'email')) userField = inputs[i];
+                if (!passField && type === 'password') passField = inputs[i];
+            }}
+
+            if (userField && passField) {{
+                userField.value = "{username}";
+                passField.value = "{password}";
+            }} else {{
+                setTimeout(() => autoFill(retries - 1), 300);
+            }}
+        }})();
+        """
+
+        self._browser.page().runJavaScript(js)
 
     def engineCombo(self) -> EngineTypeCombo:
         return self._engine_combo

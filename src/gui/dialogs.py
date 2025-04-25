@@ -89,8 +89,9 @@ class PasswordsDialog(QDialog):
 class CreateNewPasswordDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Create New Value')
+        self.setWindowTitle('Create New Password')
         self.setLayout(QVBoxLayout())
+        self.resize(400, 300)
 
         self.createUI()
 
@@ -111,7 +112,7 @@ class CreateNewPasswordDialog(QDialog):
         self.layout().addWidget(self.username_input)
         self.layout().addSpacing(10)
         self.layout().addWidget(self.password_input)
-        self.layout().addSpacing(50)
+        self.layout().addStretch()
         self.layout().addWidget(self.button_group)
 
     def accept(self):
@@ -125,6 +126,7 @@ class GetBookmarkDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle('Create New Value')
         self.setLayout(QVBoxLayout())
+        self.resize(400, 300)
 
         self.createUI()
 
@@ -141,7 +143,7 @@ class GetBookmarkDialog(QDialog):
         self.layout().addWidget(self.url_input)
         self.layout().addSpacing(10)
         self.layout().addWidget(self.input)
-        self.layout().addSpacing(50)
+        self.layout().addStretch()
         self.layout().addWidget(self.button_group)
 
     def accept(self):

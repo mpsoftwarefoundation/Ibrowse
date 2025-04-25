@@ -1,6 +1,6 @@
 from src.imports import *
 from src.gui.tab import Tab
-from gui.tab_view import PageTabWidget
+from src.gui.tab_view import PageTabWidget
 from mp_software_stylesheets.styles import IBROWSECSS
 
 
