@@ -8,4 +8,7 @@ name = "ibrowse"
 crate-type = ["cdylib"]
 
 [dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+dirs = "5.0"
 pyo3 = { version = "0.24.0", features = ["extension-module"] }

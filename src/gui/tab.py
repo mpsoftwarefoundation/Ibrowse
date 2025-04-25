@@ -1,7 +1,6 @@
-from importlib import reload
-
 from src.imports import *
-from src.gui.widgets import SearchBar, EngineTypeCombo
+from src.gui.widgets import SearchBar, EngineTypeCombo, ContextMenu
+from src.gui.dialogs import PasswordsDialog, BookmarksDialog
 
 
 class Tab(QWidget):
@@ -11,6 +10,8 @@ class Tab(QWidget):
         self.layout().setContentsMargins(0, 0,0,0)
 
         self.tab_view = tab_view
+        self._passwords_dialog = PasswordsDialog(self)
+        self._bookmarks_dialog = BookmarksDialog(self)
 
         self.createUI()
 
@@ -23,12 +24,14 @@ class Tab(QWidget):
         nav_bar.setLayout(QHBoxLayout())
         nav_bar.layout().setContentsMargins(5, 5, 5, 5)
 
-        back_btn = QPushButton('<')
+        back_btn = QPushButton('←')
         back_btn.setFixedWidth(20)
-        forward_btn = QPushButton('>')
+        forward_btn = QPushButton('→')
         forward_btn.setFixedWidth(20)
-        reload_btn = QPushButton('↺')
+        reload_btn = QPushButton('↻')
         reload_btn.setFixedWidth(20)
+        menu_btn = QPushButton('•••')
+        menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
 
         self._engine_combo = EngineTypeCombo(self)
         self._search_bar = SearchBar()
@@ -39,6 +42,7 @@ class Tab(QWidget):
         nav_bar.layout().addWidget(reload_btn)
         nav_bar.layout().addWidget(self._engine_combo)
         nav_bar.layout().addWidget(self._search_bar)
+        nav_bar.layout().addWidget(menu_btn)
 
         self._browser = QWebEngineView()
         self._browser.urlChanged.connect(self._search_bar.setUrl)
@@ -89,6 +93,19 @@ class Tab(QWidget):
         if index != -1:
             self.tab_view.setTabText(index, self._browser.title())
             self.tab_view.setTabIcon(index, self._browser.icon())
+
+    def showMenu(self, button: QPushButton):
+        menu = ContextMenu(self)
+
+        passwords_action = QAction('Passwords', self)
+        passwords_action.triggered.connect(self._passwords_dialog.show)
+        bookmarks_action = QAction('Bookmarks', self)
+        bookmarks_action.triggered.connect(self._bookmarks_dialog.show)
+
+        menu.addAction(passwords_action)
+        menu.addAction(bookmarks_action)
+
+        menu.exec(self.mapToGlobal(button.pos()))
 
     def engineCombo(self) -> EngineTypeCombo:
         return self._engine_combo
