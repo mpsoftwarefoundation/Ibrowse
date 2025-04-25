@@ -1,0 +1,54 @@
+from src.imports import *
+
+
+class SearchBar(QLineEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setObjectName('searchBar')
+        self.setPlaceholderText('Search...')
+
+    def setUrl(self, url: QUrl):
+        self.blockSignals(True)
+        self.setText(url.toString() if isinstance(url, QUrl) else url)
+        self.blockSignals(False)
+
+
+class EngineTypeCombo(QComboBox):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self._engine_types = {
+            'Google': 'google.com/search?q=',
+            'DuckDuckGo': 'duckduckgo.com/?q=',
+            'Bing': 'bing.com/search?q=',
+            'Yahoo': 'search.yahoo.com/search?p=',
+            'Startpage': 'startpage.com/sp/search?query=',
+            'Ecosia': 'ecosia.org/search?q=',
+            'Qwant': 'qwant.com/?q=',
+            'Yandex': 'yandex.com/search/?text=',
+            'Brave': 'search.brave.com/search?q=',
+            'Mojeek': 'mojeek.com/search?q='
+        }
+        self._engine_type = 'google.com/search?q='
+
+        self.createTypes()
+
+    def createTypes(self):
+        for k, v in self._engine_types.items():
+            self.addItem(k, v)
+
+
+class PageTabWidget(QTabWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setTabsClosable(True)
+        self.setMovable(True)
+
+        self.tabCloseRequested.connect(self.closeTab)
+
+    def closeTab(self, index: int):
+        if self.count() == 1:
+            self.parent().close()
+            return
+
+        self.removeTab(index)

@@ -1,0 +1,56 @@
+from src.imports import *
+from src.gui.widgets import SearchBar, EngineTypeCombo
+
+
+class Tab(QWidget):
+    def __init__(self, tab_view: QTabWidget, url: str = '', parent=None):
+        super().__init__(parent)
+        self.setLayout(QVBoxLayout())
+        self.layout().setContentsMargins(0, 0,0,0)
+
+        self.tab_view = tab_view
+
+        self.createUI()
+
+        if url:
+            self.search(url)
+
+    def createUI(self):
+        nav_bar = QWidget()
+        nav_bar.setFixedHeight(38)
+        nav_bar.setLayout(QHBoxLayout())
+        nav_bar.layout().setContentsMargins(5, 5, 5, 5)
+
+        self.engine_combo = EngineTypeCombo(self)
+        self.search_bar = SearchBar()
+        self.search_bar.returnPressed.connect(lambda: self.search(self.search_bar.text()))
+        nav_bar.layout().addWidget(self.engine_combo)
+        nav_bar.layout().addWidget(self.search_bar)
+
+        self.browser = QWebEngineView()
+        self.browser.urlChanged.connect(self.search_bar.setUrl)
+        self.browser.titleChanged.connect(self.updateTab)
+        self.browser.iconChanged.connect(self.updateTab)
+
+        self.layout().addWidget(nav_bar)
+        self.layout().addWidget(self.browser)
+
+    def search(self, query: str):
+        if query.startswith('https'):
+            pass
+
+        elif '.' in query.strip():
+            query = f'https://{query}'
+
+        else:
+            query = f'https://{self.engine_combo.itemData(self.engine_combo.currentIndex())}{query.replace(' ', '+')}'
+
+        self.search_bar.setText(query)
+        self.browser.load(QUrl(query))
+        self.browser.setFocus()
+
+    def updateTab(self):
+        index = self.tab_view.indexOf(self)
+        if index != -1:
+            self.tab_view.setTabText(index, self.browser.title())
+            self.tab_view.setTabIcon(index, self.browser.icon())
