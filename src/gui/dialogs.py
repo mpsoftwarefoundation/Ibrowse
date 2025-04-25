@@ -9,6 +9,7 @@ class PasswordsDialog(QDialog):
         self.setWindowTitle('Password Manager')
         self.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.setLayout(QVBoxLayout())
+        self.resize(500, 300)
 
         self.createUI()
         self.createList()
@@ -35,34 +36,40 @@ class PasswordsDialog(QDialog):
         self.password_list.clear()
         self.items = []
 
-        for k, v in ibrowse.passwords().items():
-            item = QListWidgetItem(k)
-            item.password = v
+        for url, value in ibrowse.passwords().items():
+            item = QListWidgetItem(url)
+            item.username = value[0]
+            item.password = value[1]
 
             container = QWidget()
             layout = QHBoxLayout(container)
             layout.setContentsMargins(0, 0, 0, 0)
             container.setLayout(layout)
 
-            copy_btn = QPushButton('[ ]')
-            copy_btn.setFixedWidth(20)
-            copy_btn.setToolTip('Copy password')
-            copy_btn.clicked.connect(lambda _, i=item: QApplication.clipboard().setText(i.password))
+            copy_username_btn = QPushButton('[U]')
+            copy_username_btn.setFixedWidth(20)
+            copy_username_btn.setToolTip('Copy username')
+            copy_username_btn.clicked.connect(lambda _, i=item: QApplication.clipboard().setText(i.username))
+            copy_password_btn = QPushButton('[P]')
+            copy_password_btn.setFixedWidth(20)
+            copy_password_btn.setToolTip('Copy password')
+            copy_password_btn.clicked.connect(lambda _, i=item: QApplication.clipboard().setText(i.password))
             delete_btn = QPushButton('✕')
             delete_btn.setFixedWidth(20)
             delete_btn.setToolTip('Delete password')
             delete_btn.clicked.connect(lambda _, i=item: self.deletePassword(i))
             container.layout().addStretch()
-            container.layout().addWidget(copy_btn)
+            container.layout().addWidget(copy_username_btn)
+            container.layout().addWidget(copy_password_btn)
             container.layout().addWidget(delete_btn)
 
             self.password_list.addItem(item)
             self.password_list.setItemWidget(item, container)
 
-            self.items.append((item, k))
+            self.items.append((item, url))
 
     def addPassword(self):
-        dialog = CreateNewDialog(self)
+        dialog = CreateNewPasswordDialog(self)
         dialog.exec()
 
         self.createList()
@@ -80,7 +87,7 @@ class PasswordsDialog(QDialog):
             item.setHidden(not is_match)
 
 
-class CreateNewDialog(QDialog):
+class CreateNewPasswordDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Create New Value')
@@ -90,8 +97,9 @@ class CreateNewDialog(QDialog):
 
     def createUI(self):
         self.url_input = StringInput(title='URL:', layout=QVBoxLayout(), placeholder='Enter a valid URL')
-        self.input = StringInput(title='Value:', layout=QVBoxLayout(), placeholder='Enter the value')
-        self.input._input.setEchoMode(QLineEdit.EchoMode.Password)
+        self.username_input = StringInput(title='Username:', layout=QVBoxLayout(), placeholder='Enter the username')
+        self.password_input = StringInput(title='Password:', layout=QVBoxLayout(), placeholder='Enter the password')
+        self.password_input._input.setEchoMode(QLineEdit.EchoMode.Password)
 
         self.button_group = QDialogButtonBox(self)
         self.button_group.addButton('Ok', QDialogButtonBox.ButtonRole.AcceptRole)
@@ -101,12 +109,14 @@ class CreateNewDialog(QDialog):
 
         self.layout().addWidget(self.url_input)
         self.layout().addSpacing(10)
-        self.layout().addWidget(self.input)
+        self.layout().addWidget(self.username_input)
+        self.layout().addSpacing(10)
+        self.layout().addWidget(self.password_input)
         self.layout().addSpacing(50)
         self.layout().addWidget(self.button_group)
 
     def accept(self):
-        ibrowse.add_password(self.url_input.value(), self.input.value())
+        ibrowse.add_password(self.url_input.value(), self.username_input.value(), self.password_input.value())
 
         self.close()
 

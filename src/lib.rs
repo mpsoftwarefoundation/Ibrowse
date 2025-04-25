@@ -10,7 +10,7 @@ use std::path::PathBuf;
 // Config
 #[derive(Serialize, Deserialize, Debug)]
 struct BrowserConfig {
-    passwords: HashMap<String, String>,
+    passwords: HashMap<String, [String; 2]>,
     bookmarks: HashMap<String, String>,
     previous_tabs: Vec<String>,
 }
@@ -65,7 +65,7 @@ fn test() -> PyResult<()> {
 }
 
 #[pyfunction]
-fn passwords() -> PyResult<HashMap<String, String>> {
+fn passwords() -> PyResult<HashMap<String, [String; 2]>> {
     let config = load_config();
     Ok(config.passwords)
 }
@@ -83,9 +83,10 @@ fn previous_tabs() -> PyResult<Vec<String>> {
 }
 
 #[pyfunction]
-fn add_password(url: &str, password: &str) -> PyResult<()> {
+fn add_password(url: &str, username: &str, password: &str) -> PyResult<()> {
     let mut config = load_config();
-    config.passwords.insert(url.to_string(), password.to_string());
+    let array = [username.to_string(), password.to_string()];
+    config.passwords.insert(url.to_string(), array);
     save_config(&config);
     Ok(())
 }
