@@ -6,6 +6,21 @@ class SearchBar(QLineEdit):
         super().__init__(parent)
         self.setObjectName('searchBar')
         self.setPlaceholderText('Search...')
+        self.installEventFilter(self)
+
+        self._mouse_pressed = False
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.Type.MouseButtonPress:
+            self._mouse_pressed = True
+        return super().eventFilter(obj, event)
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+
+        if self._mouse_pressed:
+            self._mouse_pressed = False
+            QTimer.singleShot(0, self.selectAll)
 
     def setUrl(self, url: QUrl):
         self.blockSignals(True)
