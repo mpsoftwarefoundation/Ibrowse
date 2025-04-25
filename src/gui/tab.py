@@ -52,10 +52,16 @@ class Tab(QWidget):
         self.layout().addWidget(self._browser)
 
     def search(self, query: str):
+        query = query.strip()
+
         if query.startswith('https'):
             pass
 
-        elif '.' in query.strip():
+        elif query.startswith('/'):
+            if query == '/exit':
+                QApplication.quit()
+
+        elif '.' in query:
             query = f'https://{query}'
 
         else:

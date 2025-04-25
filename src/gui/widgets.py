@@ -10,6 +10,10 @@ class SearchBar(QLineEdit):
 
         self._mouse_pressed = False
 
+        self._completer = QCompleter(['/exit'])
+        self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.setCompleter(self._completer)
+
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Type.MouseButtonPress:
             self._mouse_pressed = True
