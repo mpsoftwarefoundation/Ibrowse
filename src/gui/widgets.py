@@ -69,31 +69,6 @@ class EngineTypeCombo(QComboBox):
             self.addItem(k, v)
 
 
-class PageTabWidget(QTabWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setTabsClosable(True)
-        self.setMovable(True)
-
-        self.tabCloseRequested.connect(self.closeTab)
-
-    def startEditing(self):
-        self.currentWidget().searchBar().startEditing()
-
-    def forward(self):
-        self.currentWidget().browser().forward()
-
-    def back(self):
-        self.currentWidget().browser().back()
-
-    def closeTab(self, index: int):
-        if self.count() == 1:
-            self.parent().close()
-            return
-
-        self.removeTab(index)
-
-
 class ContextMenu(QMenu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

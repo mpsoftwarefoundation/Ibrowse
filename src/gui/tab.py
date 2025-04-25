@@ -13,6 +13,7 @@ class Tab(QWidget):
         self._passwords_dialog = PasswordsDialog(self)
 
         self.createUI()
+        self.createActions()
 
         if url:
             self.search(url)
@@ -25,10 +26,13 @@ class Tab(QWidget):
 
         back_btn = QPushButton('◀')
         back_btn.setObjectName('searchBarButton')
+        back_btn.setShortcut(QKeySequence('Ctrl+left'))
         forward_btn = QPushButton('▶')
         forward_btn.setObjectName('searchBarButton')
+        forward_btn.setShortcut(QKeySequence('Ctrl+right'))
         reload_btn = QPushButton('↻')
         reload_btn.setObjectName('searchBarButton')
+        reload_btn.setShortcut(QKeySequence('Ctrl+R'))
         menu_btn = QPushButton('···')
         menu_btn.setObjectName('searchBarButton')
         menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
@@ -54,6 +58,18 @@ class Tab(QWidget):
 
         self.layout().addWidget(nav_bar)
         self.layout().addWidget(self._browser)
+
+    def createActions(self):
+        new_tab_action = QAction('New Tab', self)
+        new_tab_action.setShortcut(QKeySequence('Ctrl+N'))
+        new_tab_action.triggered.connect(self.tab_view.newTab)
+
+        quick_edit_action = QAction('Quick Edit', self)
+        quick_edit_action.setShortcut(QKeySequence('Ctrl+Q'))
+        quick_edit_action.triggered.connect(self._search_bar.startEditing)
+
+        self.addAction(new_tab_action)
+        self.addAction(quick_edit_action)
 
     def search(self, query: str):
         query = query.strip()
@@ -99,6 +115,7 @@ class Tab(QWidget):
             self.tab_view.setTabText(index, (self._browser.title()[:25] + '...')
             if len(self._browser.title()) > 25 else self._browser.title()
                                      )
+            self.tab_view.setTabToolTip(index, self._browser.title())
             self.tab_view.setTabIcon(index, self._browser.icon())
 
     def showMenu(self, button: QPushButton):

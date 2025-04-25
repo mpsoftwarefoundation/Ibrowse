@@ -1,6 +1,6 @@
 from src.imports import *
 from src.gui.tab import Tab
-from src.gui.widgets import PageTabWidget
+from gui.tab_view import PageTabWidget
 from mp_software_stylesheets.styles import IBROWSECSS
 
 
@@ -33,32 +33,6 @@ class Ibrowse(QMainWindow):
 
         self.setCentralWidget(self.tab_view)
 
-    def createActions(self):
-        new_tab_action = QAction(self)
-        new_tab_action.setShortcut(QKeySequence('Ctrl+N'))
-        new_tab_action.triggered.connect(self.newTab)
-
-        search_action = QAction(self)
-        search_action.setShortcut(QKeySequence('Ctrl+Q'))
-        search_action.triggered.connect(self.tab_view.startEditing)
-
-        back_action = QAction(self)
-        back_action.setShortcut(QKeySequence('Ctrl+left'))
-        back_action.triggered.connect(self.tab_view.back)
-
-        forward_action = QAction(self)
-        forward_action.setShortcut(QKeySequence('Ctrl+right'))
-        forward_action.triggered.connect(self.tab_view.forward)
-
-        reload_action = QAction(self)
-        reload_action.setShortcut(QKeySequence('Ctrl+R'))
-        reload_action.triggered.connect(self.tab_view.currentWidget().browser().reload)
-
-        self.addAction(new_tab_action)
-        self.addAction(search_action)
-        self.addAction(back_action)
-        self.addAction(forward_action)
-
     def loadTabs(self):
         if len(ibrowse.previous_tabs()) > 0:
             for url in ibrowse.previous_tabs():
@@ -67,10 +41,6 @@ class Ibrowse(QMainWindow):
 
         else:
             self.tab_view.addTab(Tab(self.tab_view, parent=self).fromHtml('resources/pages/startup.html'), 'Welcome')
-
-    def newTab(self):
-        self.tab_view.addTab(Tab(self.tab_view, 'google.com', parent=self), 'New Tab')
-        self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
 
     def openFromArg(self, arg: str):
         if os.path.exists(arg):
@@ -96,7 +66,6 @@ def main():
     app.processEvents()
 
     window.loadTabs()
-    window.createActions()
 
     if len(sys.argv) > 1:
         window.openFromArg(sys.argv[1])
