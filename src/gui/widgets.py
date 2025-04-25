@@ -9,7 +9,7 @@ class SearchBar(QLineEdit):
 
     def setUrl(self, url: QUrl):
         self.blockSignals(True)
-        self.setText(url.toString() if isinstance(url, QUrl) else url)
+        self.setText(url.toString())
         self.blockSignals(False)
 
 

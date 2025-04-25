@@ -1,8 +1,6 @@
-import sys
-
-from src.gui.widgets import PageTabWidget
 from src.imports import *
 from src.gui.tab import Tab
+from src.gui.widgets import PageTabWidget
 from mp_software_stylesheets.styles import IBROWSECSS
 
 
@@ -18,7 +16,9 @@ class Ibrowse(QMainWindow):
 
     def createUI(self):
         self.tab_view = PageTabWidget(self)
-        self.tab_view.addTab(Tab(self.tab_view, parent=self), 'Welcome')
+
+        welcome_page = Tab(self.tab_view, parent=self)
+        self.tab_view.addTab(welcome_page.fromHtml('resources/pages/startup.html'), 'Welcome')
 
         self.setCentralWidget(self.tab_view)
 
@@ -26,7 +26,13 @@ class Ibrowse(QMainWindow):
         new_tab_action = QAction(self)
         new_tab_action.setShortcut(QKeySequence('Ctrl+N'))
         new_tab_action.triggered.connect(self.newTab)
+
+        search_action = QAction(self)
+        search_action.setShortcut(QKeySequence('Ctrl+Q'))
+        search_action.triggered.connect(self.tab_view.currentWidget().search_bar.setFocus)
+
         self.addAction(new_tab_action)
+        self.addAction(search_action)
 
     def newTab(self):
         self.tab_view.addTab(Tab(self.tab_view, 'google.com', parent=self), 'New Tab')

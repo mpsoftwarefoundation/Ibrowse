@@ -49,8 +49,21 @@ class Tab(QWidget):
         self.browser.load(QUrl(query))
         self.browser.setFocus()
 
+    def fromHtml(self, file_name: str):
+        html = ''
+
+        with open(file_name, 'r') as f:
+            html = f.read()
+
+        if html:
+            self.browser.setHtml(html)
+            self.browser.setFocus()
+
+        return self
+
     def updateTab(self):
         index = self.tab_view.indexOf(self)
+
         if index != -1:
             self.tab_view.setTabText(index, self.browser.title())
             self.tab_view.setTabIcon(index, self.browser.icon())
