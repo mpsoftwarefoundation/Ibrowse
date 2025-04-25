@@ -80,12 +80,6 @@ class PasswordsDialog(QDialog):
             item.setHidden(not is_match)
 
 
-class BookmarksDialog(QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        pass
-
-
 class CreateNewDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -113,5 +107,35 @@ class CreateNewDialog(QDialog):
 
     def accept(self):
         ibrowse.add_password(self.url_input.value(), self.input.value())
+
+        self.close()
+
+
+class GetBookmarkDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Create New Value')
+        self.setLayout(QVBoxLayout())
+
+        self.createUI()
+
+    def createUI(self):
+        self.url_input = StringInput(title='URL:', layout=QVBoxLayout(), placeholder='Enter a valid URL')
+        self.input = StringInput(title='Bookmark Name:', layout=QVBoxLayout(), placeholder='Enter a bookmark name')
+
+        self.button_group = QDialogButtonBox(self)
+        self.button_group.addButton('Ok', QDialogButtonBox.ButtonRole.AcceptRole)
+        self.button_group.addButton('Cancel', QDialogButtonBox.ButtonRole.RejectRole)
+        self.button_group.accepted.connect(self.accept)
+        self.button_group.rejected.connect(self.close)
+
+        self.layout().addWidget(self.url_input)
+        self.layout().addSpacing(10)
+        self.layout().addWidget(self.input)
+        self.layout().addSpacing(50)
+        self.layout().addWidget(self.button_group)
+
+    def accept(self):
+        ibrowse.add_bookmark(self.url_input.value(), self.input.value())
 
         self.close()

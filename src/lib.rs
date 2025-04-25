@@ -101,7 +101,7 @@ fn remove_password(url: &str) -> PyResult<()> {
 #[pyfunction]
 fn add_bookmark(url: &str, name: &str) -> PyResult<()> {
     let mut config = load_config();
-    config.bookmarks.insert(name.to_string(), url.to_string());
+    config.bookmarks.insert(url.to_string(), name.to_string());
     save_config(&config);
     Ok(())
 }
