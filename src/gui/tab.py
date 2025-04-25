@@ -29,9 +29,11 @@ class Tab(QWidget):
         forward_btn.setFixedWidth(20)
         reload_btn = QPushButton('↺')
         reload_btn.setFixedWidth(20)
+
         self.engine_combo = EngineTypeCombo(self)
         self.search_bar = SearchBar()
         self.search_bar.returnPressed.connect(lambda: self.search(self.search_bar.text()))
+
         nav_bar.layout().addWidget(back_btn)
         nav_bar.layout().addWidget(forward_btn)
         nav_bar.layout().addWidget(reload_btn)
