@@ -1,3 +1,5 @@
+from importlib import reload
+
 from src.imports import *
 from src.gui.widgets import SearchBar, EngineTypeCombo
 
@@ -21,9 +23,18 @@ class Tab(QWidget):
         nav_bar.setLayout(QHBoxLayout())
         nav_bar.layout().setContentsMargins(5, 5, 5, 5)
 
+        back_btn = QPushButton('<')
+        back_btn.setFixedWidth(20)
+        forward_btn = QPushButton('>')
+        forward_btn.setFixedWidth(20)
+        reload_btn = QPushButton('↺')
+        reload_btn.setFixedWidth(20)
         self.engine_combo = EngineTypeCombo(self)
         self.search_bar = SearchBar()
         self.search_bar.returnPressed.connect(lambda: self.search(self.search_bar.text()))
+        nav_bar.layout().addWidget(back_btn)
+        nav_bar.layout().addWidget(forward_btn)
+        nav_bar.layout().addWidget(reload_btn)
         nav_bar.layout().addWidget(self.engine_combo)
         nav_bar.layout().addWidget(self.search_bar)
 
@@ -31,6 +42,9 @@ class Tab(QWidget):
         self.browser.urlChanged.connect(self.search_bar.setUrl)
         self.browser.titleChanged.connect(self.updateTab)
         self.browser.iconChanged.connect(self.updateTab)
+        back_btn.clicked.connect(self.browser.back)
+        forward_btn.clicked.connect(self.browser.forward)
+        reload_btn.clicked.connect(self.browser.reload)
 
         self.layout().addWidget(nav_bar)
         self.layout().addWidget(self.browser)
