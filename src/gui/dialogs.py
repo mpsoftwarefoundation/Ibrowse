@@ -1,6 +1,5 @@
 from src.imports import *
 from src.gui.widgets import StringInput
-import ibrowse
 
 
 class PasswordsDialog(QDialog):

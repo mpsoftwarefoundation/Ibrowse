@@ -12,13 +12,24 @@ class Ibrowse(QMainWindow):
         self.resize(1000, 800)
 
         self.createUI()
-        self.createActions()
+
+    def closeEvent(self, event):
+        if self.tab_view.count() > 0:
+            tabs = []
+
+            for i in range(self.tab_view.count()):
+                tab = self.tab_view.widget(i)
+                tabs.append(tab.activeUrl().toString())
+
+            ibrowse.set_previous_tabs(tabs)
+
+        else:
+            ibrowse.set_previous_tabs([])
+
+        super().closeEvent(event)
 
     def createUI(self):
         self.tab_view = PageTabWidget(self)
-
-        welcome_page = Tab(self.tab_view, parent=self)
-        self.tab_view.addTab(welcome_page.fromHtml('resources/pages/startup.html'), 'Welcome')
 
         self.setCentralWidget(self.tab_view)
 
@@ -29,15 +40,15 @@ class Ibrowse(QMainWindow):
 
         search_action = QAction(self)
         search_action.setShortcut(QKeySequence('Ctrl+Q'))
-        search_action.triggered.connect(self.tab_view.currentWidget().searchBar().startEditing)
+        search_action.triggered.connect(self.tab_view.startEditing)
 
         back_action = QAction(self)
         back_action.setShortcut(QKeySequence('Ctrl+left'))
-        back_action.triggered.connect(self.tab_view.currentWidget().browser().back)
+        back_action.triggered.connect(self.tab_view.back)
 
         forward_action = QAction(self)
         forward_action.setShortcut(QKeySequence('Ctrl+right'))
-        forward_action.triggered.connect(self.tab_view.currentWidget().browser().forward)
+        forward_action.triggered.connect(self.tab_view.forward)
 
         reload_action = QAction(self)
         reload_action.setShortcut(QKeySequence('Ctrl+R'))
@@ -47,6 +58,15 @@ class Ibrowse(QMainWindow):
         self.addAction(search_action)
         self.addAction(back_action)
         self.addAction(forward_action)
+
+    def loadTabs(self):
+        if len(ibrowse.previous_tabs()) > 0:
+            for url in ibrowse.previous_tabs():
+                tab = Tab(self.tab_view, url=url, parent=self)
+                self.tab_view.addTab(tab, '')
+
+        else:
+            self.tab_view.addTab(Tab(self.tab_view, parent=self).fromHtml('resources/pages/startup.html'), 'Welcome')
 
     def newTab(self):
         self.tab_view.addTab(Tab(self.tab_view, 'google.com', parent=self), 'New Tab')
@@ -72,6 +92,11 @@ def main():
 
     window = Ibrowse()
     window.show()
+
+    app.processEvents()
+
+    window.loadTabs()
+    window.createActions()
 
     if len(sys.argv) > 1:
         window.openFromArg(sys.argv[1])

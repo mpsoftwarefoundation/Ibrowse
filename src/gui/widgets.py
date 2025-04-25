@@ -1,5 +1,4 @@
 from src.imports import *
-import ibrowse
 
 
 class SearchBar(QLineEdit):
@@ -77,6 +76,15 @@ class PageTabWidget(QTabWidget):
         self.setMovable(True)
 
         self.tabCloseRequested.connect(self.closeTab)
+
+    def startEditing(self):
+        self.currentWidget().searchBar().startEditing()
+
+    def forward(self):
+        self.currentWidget().browser().forward()
+
+    def back(self):
+        self.currentWidget().browser().back()
 
     def closeTab(self, index: int):
         if self.count() == 1:

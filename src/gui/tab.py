@@ -1,8 +1,6 @@
-from gui.dialogs import GetBookmarkDialog
 from src.imports import *
 from src.gui.widgets import SearchBar, EngineTypeCombo, ContextMenu
-from src.gui.dialogs import PasswordsDialog
-import ibrowse
+from src.gui.dialogs import PasswordsDialog, GetBookmarkDialog
 
 
 class Tab(QWidget):
@@ -98,7 +96,9 @@ class Tab(QWidget):
         index = self.tab_view.indexOf(self)
 
         if index != -1:
-            self.tab_view.setTabText(index, self._browser.title())
+            self.tab_view.setTabText(index, (self._browser.title()[:25] + '...')
+            if len(self._browser.title()) > 25 else self._browser.title()
+                                     )
             self.tab_view.setTabIcon(index, self._browser.icon())
 
     def showMenu(self, button: QPushButton):
@@ -160,3 +160,6 @@ class Tab(QWidget):
 
     def browser(self) -> QWebEngineView:
         return self._browser
+
+    def activeUrl(self) -> QUrl:
+        return self._browser.url()
