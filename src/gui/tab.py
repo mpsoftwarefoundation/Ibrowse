@@ -72,7 +72,7 @@ class Tab(QWidget):
                 self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
                 return
 
-        elif '.' in query:
+        elif '.com' in query:
             query = f'https://{query}'
 
         else:
