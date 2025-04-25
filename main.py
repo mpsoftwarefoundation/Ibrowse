@@ -29,10 +29,24 @@ class Ibrowse(QMainWindow):
 
         search_action = QAction(self)
         search_action.setShortcut(QKeySequence('Ctrl+Q'))
-        search_action.triggered.connect(self.tab_view.currentWidget().search_bar.setFocus)
+        search_action.triggered.connect(self.tab_view.currentWidget().searchBar().startEditing)
+
+        back_action = QAction(self)
+        back_action.setShortcut(QKeySequence('Ctrl+left'))
+        back_action.triggered.connect(self.tab_view.currentWidget().browser().back)
+
+        forward_action = QAction(self)
+        forward_action.setShortcut(QKeySequence('Ctrl+right'))
+        forward_action.triggered.connect(self.tab_view.currentWidget().browser().forward)
+
+        reload_action = QAction(self)
+        reload_action.setShortcut(QKeySequence('Ctrl+R'))
+        reload_action.triggered.connect(self.tab_view.currentWidget().browser().reload)
 
         self.addAction(new_tab_action)
         self.addAction(search_action)
+        self.addAction(back_action)
+        self.addAction(forward_action)
 
     def newTab(self):
         self.tab_view.addTab(Tab(self.tab_view, 'google.com', parent=self), 'New Tab')

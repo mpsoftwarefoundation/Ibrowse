@@ -22,6 +22,10 @@ class SearchBar(QLineEdit):
             self._mouse_pressed = False
             QTimer.singleShot(0, self.selectAll)
 
+    def startEditing(self):
+        self.setFocus()
+        self.selectAll()
+
     def setUrl(self, url: QUrl):
         self.blockSignals(True)
         self.setText(url.toString())

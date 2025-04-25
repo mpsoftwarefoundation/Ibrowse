@@ -30,26 +30,26 @@ class Tab(QWidget):
         reload_btn = QPushButton('↺')
         reload_btn.setFixedWidth(20)
 
-        self.engine_combo = EngineTypeCombo(self)
-        self.search_bar = SearchBar()
-        self.search_bar.returnPressed.connect(lambda: self.search(self.search_bar.text()))
+        self._engine_combo = EngineTypeCombo(self)
+        self._search_bar = SearchBar()
+        self._search_bar.returnPressed.connect(lambda: self.search(self._search_bar.text()))
 
         nav_bar.layout().addWidget(back_btn)
         nav_bar.layout().addWidget(forward_btn)
         nav_bar.layout().addWidget(reload_btn)
-        nav_bar.layout().addWidget(self.engine_combo)
-        nav_bar.layout().addWidget(self.search_bar)
+        nav_bar.layout().addWidget(self._engine_combo)
+        nav_bar.layout().addWidget(self._search_bar)
 
-        self.browser = QWebEngineView()
-        self.browser.urlChanged.connect(self.search_bar.setUrl)
-        self.browser.titleChanged.connect(self.updateTab)
-        self.browser.iconChanged.connect(self.updateTab)
-        back_btn.clicked.connect(self.browser.back)
-        forward_btn.clicked.connect(self.browser.forward)
-        reload_btn.clicked.connect(self.browser.reload)
+        self._browser = QWebEngineView()
+        self._browser.urlChanged.connect(self._search_bar.setUrl)
+        self._browser.titleChanged.connect(self.updateTab)
+        self._browser.iconChanged.connect(self.updateTab)
+        back_btn.clicked.connect(self._browser.back)
+        forward_btn.clicked.connect(self._browser.forward)
+        reload_btn.clicked.connect(self._browser.reload)
 
         self.layout().addWidget(nav_bar)
-        self.layout().addWidget(self.browser)
+        self.layout().addWidget(self._browser)
 
     def search(self, query: str):
         if query.startswith('https'):
@@ -59,11 +59,11 @@ class Tab(QWidget):
             query = f'https://{query}'
 
         else:
-            query = f'https://{self.engine_combo.itemData(self.engine_combo.currentIndex())}{query.replace(' ', '+')}'
+            query = f'https://{self._engine_combo.itemData(self._engine_combo.currentIndex())}{query.replace(' ', '+')}'
 
-        self.search_bar.setText(query)
-        self.browser.load(QUrl(query))
-        self.browser.setFocus()
+        self._search_bar.setText(query)
+        self._browser.load(QUrl(query))
+        self._browser.setFocus()
 
     def fromHtml(self, file_name: str):
         html = ''
@@ -72,8 +72,8 @@ class Tab(QWidget):
             html = f.read()
 
         if html:
-            self.browser.setHtml(html)
-            self.browser.setFocus()
+            self._browser.setHtml(html)
+            self._browser.setFocus()
 
         return self
 
@@ -81,5 +81,14 @@ class Tab(QWidget):
         index = self.tab_view.indexOf(self)
 
         if index != -1:
-            self.tab_view.setTabText(index, self.browser.title())
-            self.tab_view.setTabIcon(index, self.browser.icon())
+            self.tab_view.setTabText(index, self._browser.title())
+            self.tab_view.setTabIcon(index, self._browser.icon())
+
+    def engineCombo(self) -> EngineTypeCombo:
+        return self._engine_combo
+
+    def searchBar(self) -> SearchBar:
+        return self._search_bar
+
+    def browser(self) -> QWebEngineView:
+        return self._browser
