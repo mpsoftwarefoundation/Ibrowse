@@ -25,13 +25,14 @@ class Tab(QWidget):
         nav_bar.setLayout(QHBoxLayout())
         nav_bar.layout().setContentsMargins(5, 5, 5, 5)
 
-        back_btn = QPushButton('←')
-        back_btn.setFixedWidth(20)
-        forward_btn = QPushButton('→')
-        forward_btn.setFixedWidth(20)
+        back_btn = QPushButton('◀')
+        back_btn.setObjectName('searchBarButton')
+        forward_btn = QPushButton('▶')
+        forward_btn.setObjectName('searchBarButton')
         reload_btn = QPushButton('↻')
-        reload_btn.setFixedWidth(20)
-        menu_btn = QPushButton('•••')
+        reload_btn.setObjectName('searchBarButton')
+        menu_btn = QPushButton('···')
+        menu_btn.setObjectName('searchBarButton')
         menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
 
         self._engine_combo = EngineTypeCombo(self)
@@ -65,6 +66,11 @@ class Tab(QWidget):
         elif query.startswith('/'):
             if query == '/exit':
                 QApplication.quit()
+
+            elif query == '/help':
+                self.tab_view.addTab(self.fromHtml('resources/pages/help.html'), 'Help')
+                self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
+                return
 
         elif '.' in query:
             query = f'https://{query}'
