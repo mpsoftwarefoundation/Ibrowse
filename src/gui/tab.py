@@ -138,10 +138,13 @@ class Tab(QWidget):
         dialog.input.setDefaultValue(self.browser().page().title())
         dialog.exec()
 
+        self._search_bar.updateCompleter()
+
     def removeBookmark(self, url: str, menu: QMenu, action: QAction):
         ibrowse.remove_bookmark(url)
 
         menu.removeAction(action)
+        self._search_bar.updateCompleter()
 
     def engineCombo(self) -> EngineTypeCombo:
         return self._engine_combo

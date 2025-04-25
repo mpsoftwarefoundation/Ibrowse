@@ -1,4 +1,5 @@
 from src.imports import *
+import ibrowse
 
 
 class SearchBar(QLineEdit):
@@ -10,9 +11,7 @@ class SearchBar(QLineEdit):
 
         self._mouse_pressed = False
 
-        self._completer = QCompleter(['/exit'])
-        self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-        self.setCompleter(self._completer)
+        self.updateCompleter()
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Type.MouseButtonPress:
@@ -34,6 +33,16 @@ class SearchBar(QLineEdit):
         self.blockSignals(True)
         self.setText(url.toString())
         self.blockSignals(False)
+
+    def updateCompleter(self):
+        items = ['/exit', '/help']
+
+        for url, name in ibrowse.bookmarks().items():
+            items.append(url)
+
+        self._completer = QCompleter(items)
+        self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self.setCompleter(self._completer)
 
 
 class EngineTypeCombo(QComboBox):
