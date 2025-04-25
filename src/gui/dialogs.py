@@ -45,11 +45,11 @@ class PasswordsDialog(QDialog):
             layout.setContentsMargins(0, 0, 0, 0)
             container.setLayout(layout)
 
-            copy_username_btn = QPushButton('[U]')
+            copy_username_btn = QPushButton('👤')
             copy_username_btn.setFixedWidth(20)
             copy_username_btn.setToolTip('Copy username')
             copy_username_btn.clicked.connect(lambda _, i=item: QApplication.clipboard().setText(i.username))
-            copy_password_btn = QPushButton('[P]')
+            copy_password_btn = QPushButton('🔑')
             copy_password_btn.setFixedWidth(20)
             copy_password_btn.setToolTip('Copy password')
             copy_password_btn.clicked.connect(lambda _, i=item: QApplication.clipboard().setText(i.password))
