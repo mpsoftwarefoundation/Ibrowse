@@ -52,6 +52,19 @@ class Ibrowse(QMainWindow):
         self.tab_view.addTab(Tab(self.tab_view, 'google.com', parent=self), 'New Tab')
         self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
 
+    def openFromArg(self, arg: str):
+        if os.path.exists(arg):
+            tab = Tab(self.tab_view, parent=self).fromHtml(arg)
+
+            self.tab_view.addTab(tab, 'File')
+            self.tab_view.setCurrentWidget(tab)
+
+        else:
+            tab = Tab(self.tab_view, url=arg, parent=self)
+
+            self.tab_view.addTab(tab, '')
+            self.tab_view.setCurrentWidget(tab)
+
 
 def main():
     app = QApplication(sys.argv)
@@ -59,6 +72,9 @@ def main():
 
     window = Ibrowse()
     window.show()
+
+    if len(sys.argv) > 1:
+        window.openFromArg(sys.argv[1])
 
     # Crash handler
     def handle_exception(exctype, value, tb):
