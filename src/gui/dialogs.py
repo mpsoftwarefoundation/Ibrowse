@@ -116,8 +116,10 @@ class CreateNewPasswordDialog(QDialog):
         self.layout().addWidget(self.button_group)
 
     def accept(self):
-        ibrowse.add_password(self.url_input.value(), self.username_input.value(), self.password_input.value())
+        if not self.url_input.value() or not self.username_input.value() or not self.password_input.value():
+            raise Exception('Input values cannot be empty')
 
+        ibrowse.add_password(self.url_input.value(), self.username_input.value(), self.password_input.value())
         self.close()
 
 
@@ -147,6 +149,8 @@ class GetBookmarkDialog(QDialog):
         self.layout().addWidget(self.button_group)
 
     def accept(self):
-        ibrowse.add_bookmark(self.url_input.value(), self.input.value())
+        if not self.url_input.value() or not self.input.value():
+            raise Exception('Input values cannot be empty')
 
+        ibrowse.add_bookmark(self.url_input.value(), self.input.value())
         self.close()

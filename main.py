@@ -72,7 +72,7 @@ def main():
 
     # Crash handler
     def handle_exception(exctype, value, tb):
-        QMessageBox.critical(window, 'Error:(', f'IBrowse encountered an error:\n\n{value}\n')
+        QMessageBox.critical(window, 'Error:(', f'Ibrowse encountered an error:\n\n{value}\n')
         sys.__excepthook__(exctype, value, tb)
 
     # Set the global exception hook
