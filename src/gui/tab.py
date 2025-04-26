@@ -16,6 +16,7 @@ class Tab(QWidget):
         self._passwords_dialog = PasswordsDialog(self)
 
         self.createUI()
+        self.createBrowser()
         self.createActions()
 
         if url:
@@ -59,17 +60,28 @@ class Tab(QWidget):
         page = QWebEnginePage(profile, self)
         self._browser = QWebEngineView()
         self._browser.setPage(page)
-        self._browser.urlChanged.connect(self._search_bar.setUrl)
-        self._browser.titleChanged.connect(self.updateTab)
-        self._browser.iconChanged.connect(self.updateTab)
-        self._browser.loadFinished.connect(self.updateTab)
-        self._browser.loadFinished.connect(self.tryAutoFillPassword)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
         reload_btn.clicked.connect(self._browser.reload)
 
         self.layout().addWidget(nav_bar)
         self.layout().addWidget(self._browser)
+
+    def createBrowser(self):
+        self._browser.urlChanged.connect(self._search_bar.setUrl)
+        self._browser.titleChanged.connect(self.updateTab)
+        self._browser.iconChanged.connect(self.updateTab)
+        self._browser.loadFinished.connect(self.updateTab)
+        self._browser.loadFinished.connect(self.tryAutoFillPassword)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.AutoLoadIconsForPage, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.AutoLoadImages, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.Accelerated2dCanvasEnabled, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.WebGLEnabled, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PdfViewerEnabled, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ScreenCaptureEnabled, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalStorageEnabled, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
 
     def createActions(self):
         new_tab_action = QAction('New Tab', self)
