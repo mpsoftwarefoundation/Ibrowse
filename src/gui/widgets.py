@@ -9,6 +9,7 @@ class SearchBar(QLineEdit):
         self.installEventFilter(self)
 
         self._mouse_pressed = False
+        self._first_focus = True
 
         self.updateCompleter()
 
@@ -20,7 +21,10 @@ class SearchBar(QLineEdit):
     def focusInEvent(self, event):
         super().focusInEvent(event)
 
-        if self._mouse_pressed:
+        if self._first_focus:
+            self._first_focus = False
+            QTimer.singleShot(0, self.selectAll)
+        elif self._mouse_pressed:
             self._mouse_pressed = False
             QTimer.singleShot(0, self.selectAll)
 

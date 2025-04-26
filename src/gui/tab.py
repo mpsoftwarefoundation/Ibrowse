@@ -53,6 +53,7 @@ class Tab(QWidget):
         self._browser.urlChanged.connect(self._search_bar.setUrl)
         self._browser.titleChanged.connect(self.updateTab)
         self._browser.iconChanged.connect(self.updateTab)
+        self._browser.loadFinished.connect(self.updateTab)
         self._browser.loadFinished.connect(self.tryAutoFillPassword)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
@@ -66,11 +67,16 @@ class Tab(QWidget):
         new_tab_action.setShortcut(QKeySequence('Ctrl+N'))
         new_tab_action.triggered.connect(self.tab_view.newTab)
 
+        new_window_action = QAction('New Window', self)
+        new_window_action.setShortcut(QKeySequence('Ctrl+Shift+N'))
+        new_window_action.triggered.connect(self.tab_view.parent().newWindow)
+
         quick_edit_action = QAction('Quick Edit', self)
         quick_edit_action.setShortcut(QKeySequence('Ctrl+Q'))
         quick_edit_action.triggered.connect(self._search_bar.startEditing)
 
         self.addAction(new_tab_action)
+        self.addAction(new_window_action)
         self.addAction(quick_edit_action)
 
     def search(self, query: str):
@@ -122,10 +128,15 @@ class Tab(QWidget):
 
     def showMenu(self, button: QPushButton):
         menu = ContextMenu(self)
+        menu.setAnimationEnabled(True)
 
+        new_tab_action = QAction('New Tab', self)
+        new_tab_action.triggered.connect(self.tab_view.newTab)
+        new_window_action = QAction('New Window', self)
+        new_window_action.triggered.connect(self.tab_view.parent().newWindow)
         bookmark_tab_action = QAction('Bookmark This Tab', self)
         bookmark_tab_action.triggered.connect(self.bookmark)
-        passwords_action = QAction('Passwords', self)
+        passwords_action = QAction('Passwords...', self)
         passwords_action.triggered.connect(self._passwords_dialog.show)
         bookmarks_menu = ContextMenu('Bookmarks', self)
 
@@ -150,6 +161,9 @@ class Tab(QWidget):
 
             bookmarks_menu.addAction(action)
 
+        menu.addAction(new_tab_action)
+        menu.addAction(new_window_action)
+        menu.addSeparator()
         menu.addAction(bookmark_tab_action)
         menu.addSeparator()
         menu.addAction(passwords_action)

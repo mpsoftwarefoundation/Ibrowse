@@ -55,6 +55,13 @@ class Ibrowse(QMainWindow):
             self.tab_view.addTab(tab, '')
             self.tab_view.setCurrentWidget(tab)
 
+    def newWindow(self):
+        window = Ibrowse()
+        window.show()
+        window.loadTabs()
+
+        self.window = window
+
 
 def main():
     app = QApplication(sys.argv)
