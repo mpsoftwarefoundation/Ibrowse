@@ -36,11 +36,18 @@ class Ibrowse(QMainWindow):
     def loadTabs(self):
         if len(ibrowse.previous_tabs()) > 0:
             for url in ibrowse.previous_tabs():
+                if not 'https' in url:
+                    break
+
                 tab = Tab(self.tab_view, url=url, parent=self)
                 self.tab_view.addTab(tab, '')
 
-        else:
-            self.tab_view.addTab(Tab(self.tab_view, parent=self).fromHtml('resources/pages/startup.html'), 'Welcome')
+            return
+
+        self.tab_view.addTab(
+            Tab(self.tab_view, parent=self).fromHtml('resources/pages/startup.html'),
+            'Welcome'
+        )
 
     def openFromArg(self, arg: str):
         if os.path.exists(arg):
