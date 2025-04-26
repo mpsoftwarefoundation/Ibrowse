@@ -6,6 +6,9 @@ use std::fs;
 use std::io::{Read, Write};
 use std::path::PathBuf;
 
+// Modules
+mod framework;
+use framework::browser;
 
 // Config
 #[derive(Serialize, Deserialize, Debug)]
@@ -73,6 +76,14 @@ fn config_dir() -> PyResult<String> {
 }
 
 #[pyfunction]
+fn cache_dir() -> PyResult<String> {
+    let config_dir = dirs::config_dir()
+        .unwrap_or_else(|| std::env::temp_dir())
+        .join("ibrowse");
+    Ok(config_dir.join("cache").to_string_lossy().into_owned())
+}
+
+#[pyfunction]
 fn passwords() -> PyResult<HashMap<String, [String; 2]>> {
     let config = load_config();
     Ok(config.passwords)
@@ -136,6 +147,7 @@ fn set_previous_tabs(tabs: Vec<String>) -> PyResult<()> {
 fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(test, py)?)?;
     m.add_function(wrap_pyfunction!(config_dir, py)?)?;
+    m.add_function(wrap_pyfunction!(cache_dir, py)?)?;
     m.add_function(wrap_pyfunction!(passwords, py)?)?;
     m.add_function(wrap_pyfunction!(bookmarks, py)?)?;
     m.add_function(wrap_pyfunction!(previous_tabs, py)?)?;
@@ -144,5 +156,6 @@ fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(add_bookmark, py)?)?;
     m.add_function(wrap_pyfunction!(remove_bookmark, py)?)?;
     m.add_function(wrap_pyfunction!(set_previous_tabs, py)?)?;
+    m.add_function(wrap_pyfunction!(framework::browser::clear_caches, py)?)?;
     Ok(())
 }

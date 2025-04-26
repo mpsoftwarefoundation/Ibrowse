@@ -32,8 +32,11 @@ class PageTabWidget(QTabWidget):
         self.currentWidget().browser().back()
 
     def newTab(self):
-        self.addTab(Tab(self, 'google.com', parent=self), 'New Tab')
+        tab = Tab(self, 'https://google.com', parent=self)
+        self.addTab(tab, 'New Tab')
         self.setCurrentIndex(self.count() - 1)
+
+        tab.searchBar().startEditing()
 
     def closeTab(self, index: int):
         if self.count() == 1:

@@ -49,6 +49,12 @@ class Ibrowse(QMainWindow):
             'Welcome'
         )
 
+    def loadDefaultTab(self):
+        self.tab_view.addTab(
+            Tab(self.tab_view, parent=self).fromHtml('resources/pages/startup.html'),
+            'Welcome'
+        )
+
     def openFromArg(self, arg: str):
         if os.path.exists(arg):
             tab = Tab(self.tab_view, parent=self).fromHtml(arg)
@@ -65,7 +71,7 @@ class Ibrowse(QMainWindow):
     def newWindow(self):
         window = Ibrowse()
         window.show()
-        window.loadTabs()
+        window.loadDefaultTab()
 
         self.window = window
 

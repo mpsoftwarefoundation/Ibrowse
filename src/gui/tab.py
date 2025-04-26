@@ -51,8 +51,8 @@ class Tab(QWidget):
 
         profile = QWebEngineProfile('PersistentProfile', self)
         profile.setPersistentCookiesPolicy(QWebEngineProfile.PersistentCookiesPolicy.ForcePersistentCookies)
-        profile.setCachePath(ibrowse.config_dir())
-        profile.setPersistentStoragePath(ibrowse.config_dir())
+        profile.setCachePath(ibrowse.cache_dir())
+        profile.setPersistentStoragePath(ibrowse.cache_dir())
 
         page = QWebEnginePage(profile, self)
         self._browser = QWebEngineView()
@@ -224,31 +224,34 @@ class Tab(QWidget):
         if not creds:
             return
 
-        username, password = creds
+        ok = QMessageBox.question(self, 'Password', 'Use saved password for this site?')
 
-        js = f"""
-        (function autoFill(retries = 20) {{
-            if (retries === 0) return;
+        if ok:
+            username, password = creds
 
-            const inputs = document.querySelectorAll('input');
-            let userField = null, passField = null;
+            js = f"""
+            (function autoFill(retries = 20) {{
+                if (retries === 0) return;
+    
+                const inputs = document.querySelectorAll('input');
+                let userField = null, passField = null;
+    
+                for (let i = 0; i < inputs.length; i++) {{
+                    const type = inputs[i].type.toLowerCase();
+                    if (!userField && (type === 'text' || type === 'email')) userField = inputs[i];
+                    if (!passField && type === 'password') passField = inputs[i];
+                }}
+    
+                if (userField && passField) {{
+                    userField.value = "{username}";
+                    passField.value = "{password}";
+                }} else {{
+                    setTimeout(() => autoFill(retries - 1), 300);
+                }}
+            }})();
+            """
 
-            for (let i = 0; i < inputs.length; i++) {{
-                const type = inputs[i].type.toLowerCase();
-                if (!userField && (type === 'text' || type === 'email')) userField = inputs[i];
-                if (!passField && type === 'password') passField = inputs[i];
-            }}
-
-            if (userField && passField) {{
-                userField.value = "{username}";
-                passField.value = "{password}";
-            }} else {{
-                setTimeout(() => autoFill(retries - 1), 300);
-            }}
-        }})();
-        """
-
-        self._browser.page().runJavaScript(js)
+            self._browser.page().runJavaScript(js)
 
     def engineCombo(self) -> EngineTypeCombo:
         return self._engine_combo
