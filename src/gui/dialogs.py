@@ -14,20 +14,28 @@ class PasswordsDialog(QDialog):
         self.createList()
 
     def createUI(self):
+        container = QWidget()
+        container.setObjectName('searchBarButton')
+        container.setLayout(QHBoxLayout())
+        container.layout().setContentsMargins(0, 0, 0, 0)
+
         add_password_btn = QPushButton('+')
+        add_password_btn.setObjectName('searchBarButton')
         add_password_btn.setFixedWidth(25)
         add_password_btn.clicked.connect(self.addPassword)
-
         search_box = QLineEdit()
+        search_box.setFixedHeight(30)
         search_box.setPlaceholderText('Search Passwords...')
         search_box.textChanged.connect(self.searchPasswords)
+
+        container.layout().addWidget(add_password_btn)
+        container.layout().addWidget(search_box)
 
         self.password_list = QListWidget(self)
         self.password_list.setObjectName('listWidget')
         self.password_list.setSelectionMode(QListWidget.SelectionMode.NoSelection)
 
-        self.layout().addWidget(add_password_btn)
-        self.layout().addWidget(search_box)
+        self.layout().addWidget(container)
         self.layout().addSpacing(10)
         self.layout().addWidget(self.password_list)
 
