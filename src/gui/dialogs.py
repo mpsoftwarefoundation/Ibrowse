@@ -23,17 +23,24 @@ class PasswordsDialog(QDialog):
         add_password_btn.setObjectName('searchBarButton')
         add_password_btn.setFixedWidth(25)
         add_password_btn.clicked.connect(self.addPassword)
+        import_from_chrome_btn = QPushButton('📁')
+        import_from_chrome_btn.setObjectName('searchBarButton')
+        import_from_chrome_btn.clicked.connect(self.importFromChrome)
         search_box = QLineEdit()
         search_box.setFixedHeight(30)
         search_box.setPlaceholderText('Search Passwords...')
         search_box.textChanged.connect(self.searchPasswords)
 
         container.layout().addWidget(add_password_btn)
+        container.layout().addWidget(import_from_chrome_btn)
         container.layout().addWidget(search_box)
 
         self.password_list = QListWidget(self)
         self.password_list.setObjectName('listWidget')
         self.password_list.setSelectionMode(QListWidget.SelectionMode.NoSelection)
+        self.password_list.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.password_list.setWordWrap(True)
+        self.password_list.setUniformItemSizes(True)
 
         self.layout().addWidget(container)
         self.layout().addSpacing(10)
@@ -87,9 +94,9 @@ class PasswordsDialog(QDialog):
         self.createList()
 
     def deletePassword(self, item: QListWidgetItem):
-        ibrowse.remove_password(item.text())
+        ibrowse.remove_password(item.url)
 
-        self.createList()
+        self.password_list.takeItem(self.password_list.row(item))
 
     def editPassword(self, item: QListWidgetItem):
         dialog = CreatePasswordDialog(self)
@@ -97,9 +104,16 @@ class PasswordsDialog(QDialog):
         dialog.url_input.setDefaultValue(item.url)
         dialog.username_input.setDefaultValue(item.username)
         dialog.password_input.setDefaultValue(item.password)
+
+        old = dialog.url_input.value()
+
         dialog.exec()
 
-        self.createList()
+        if dialog.url_input.value() != old:
+            self.password_list.takeItem(self.password_list.row(item))
+
+        if dialog.result() == QDialog.accepted:
+            self.createList()
 
     def searchPasswords(self, text: str):
         text = text.lower()
@@ -107,6 +121,27 @@ class PasswordsDialog(QDialog):
         for item, key in self.items:
             is_match = text in key.lower()
             item.setHidden(not is_match)
+
+    def importFromChrome(self):
+        file, _ = QFileDialog.getOpenFileName(
+            self,
+            'Open Chrome Password File',
+            '',
+            'Comma Separated Value (*.csv) files'
+        )
+
+        if file:
+            with open(file, newline='', encoding='utf-8') as csvfile:
+                reader = csv.DictReader(csvfile)
+                for row in reader:
+                    url = row.get('origin', '') or row.get('origin_url', '') or row.get('url', '')
+                    username = row.get('username', '') or row.get('username_value', '')
+                    password = row.get('password', '') or row.get('password_value', '')
+
+                    if url and username and password:
+                        ibrowse.add_password(url, username, password)
+
+            self.createList()
 
 
 class CreatePasswordDialog(QDialog):
