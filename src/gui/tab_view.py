@@ -5,10 +5,12 @@ from src.gui.tab import Tab
 class PageTabWidget(QTabWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setTabsClosable(True)
+        self.setDocumentMode(True)
         self.setMovable(True)
+        self.setTabsClosable(True)
         self.tabBar().setUsesScrollButtons(False)
 
+        self.tabBarDoubleClicked.connect(self.newTab)
         self.tabCloseRequested.connect(self.closeTab)
 
         self.createUI()
