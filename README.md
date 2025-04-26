@@ -14,7 +14,7 @@ Ibrowse is the browser for those who love:
 
 ## Speed
 Ibrowse' GUI is implemented in Python/PyQt, while a Rust backend handles things like
-user passwords, bookmarks, and recent tabs. This makes Ibrowse very fast for day-to-day use.
+user passwords, bookmarks, and recent tabs. This makes Ibrowse very fast for users.
 
 ## Free And Open-Source
 Ibrowse is 100% free with no drawbacks or limitations. There is no "premium" version; you get
