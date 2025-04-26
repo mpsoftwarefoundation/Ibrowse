@@ -1,3 +1,5 @@
+import sys
+
 from src.imports import *
 from src.gui.tab import Tab
 from src.gui.tab_view import PageTabWidget
@@ -98,7 +100,7 @@ def main():
     # Set the global exception hook
     sys.excepthook = handle_exception
 
-    app.exec()
+    sys.exit(app.exec())
 
 if __name__ == '__main__':
     main()

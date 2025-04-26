@@ -2,6 +2,8 @@ from src.imports import *
 from src.gui.widgets import SearchBar, EngineTypeCombo, ContextMenu
 from src.gui.dialogs import PasswordsDialog, GetBookmarkDialog
 from urllib.parse import urlparse
+import atexit
+import subprocess
 
 
 class Tab(QWidget):
@@ -173,6 +175,9 @@ class Tab(QWidget):
 
             bookmarks_menu.addAction(action)
 
+        clear_caches_action = QAction('Clear Caches (Requires Restart)', self)
+        clear_caches_action.triggered.connect(self.clearCaches)
+
         menu.addAction(new_tab_action)
         menu.addAction(new_window_action)
         menu.addSeparator()
@@ -180,6 +185,8 @@ class Tab(QWidget):
         menu.addSeparator()
         menu.addAction(passwords_action)
         menu.addMenu(bookmarks_menu)
+        menu.addSeparator()
+        menu.addAction(clear_caches_action)
 
         menu.exec(self.mapToGlobal(button.pos()))
 
@@ -252,6 +259,33 @@ class Tab(QWidget):
             """
 
             self._browser.page().runJavaScript(js)
+
+    def clearCaches(self):
+        ok = QMessageBox.warning(self, 'Warning', 'Clearing caches will delete all browsing data!\n\n'
+                                                   'This process is safe, but you will be logged out of all '
+                                                   'websites. Are you sure you want to do this?')
+
+        if ok:
+            clear_script = os.path.join(ibrowse.config_dir(), 'clear_caches.py')
+
+            with open(clear_script, "w") as f:
+                f.write(f"""
+import time
+import shutil
+import os
+
+time.sleep(1.5)  # wait for app to fully close
+
+cache_dir = r"{ibrowse.cache_dir()}"
+
+if os.path.exists(cache_dir):
+    shutil.rmtree(cache_dir, ignore_errors=True)
+    
+os.mkdir(r"{ibrowse.config_dir()}/cache")
+            """)
+
+            subprocess.Popen([sys.executable, clear_script], close_fds=True)
+            QApplication.quit()
 
     def engineCombo(self) -> EngineTypeCombo:
         return self._engine_combo
