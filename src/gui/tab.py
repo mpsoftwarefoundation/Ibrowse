@@ -101,6 +101,11 @@ class Tab(QWidget):
                 self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
                 return
 
+            elif query == '/welcome':
+                self.tab_view.addTab(self.fromHtml('resources/pages/startup.html'), 'Help')
+                self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
+                return
+
         elif '.com' in query:
             query = f'https://{query}'
 

@@ -37,8 +37,8 @@ class PageTabWidget(QTabWidget):
 
     def closeTab(self, index: int):
         if self.count() == 1:
+            self.removeTab(index)
             self.parent().close()
-            return
 
         self.removeTab(index)
         self.update()

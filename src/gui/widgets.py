@@ -38,7 +38,7 @@ class SearchBar(QLineEdit):
         self.blockSignals(False)
 
     def updateCompleter(self):
-        items = ['/exit', '/help']
+        items = ['/exit', '/help', '/welcome']
 
         for url, name in ibrowse.bookmarks().items():
             items.append(url)
