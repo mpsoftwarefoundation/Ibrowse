@@ -65,6 +65,14 @@ fn test() -> PyResult<()> {
 }
 
 #[pyfunction]
+fn config_dir() -> PyResult<String> {
+    let config_dir = dirs::config_dir()
+        .unwrap_or_else(|| std::env::temp_dir())
+        .join("ibrowse");
+    Ok(config_dir.to_string_lossy().into_owned())
+}
+
+#[pyfunction]
 fn passwords() -> PyResult<HashMap<String, [String; 2]>> {
     let config = load_config();
     Ok(config.passwords)
@@ -127,6 +135,7 @@ fn set_previous_tabs(tabs: Vec<String>) -> PyResult<()> {
 #[pymodule]
 fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(test, py)?)?;
+    m.add_function(wrap_pyfunction!(config_dir, py)?)?;
     m.add_function(wrap_pyfunction!(passwords, py)?)?;
     m.add_function(wrap_pyfunction!(bookmarks, py)?)?;
     m.add_function(wrap_pyfunction!(previous_tabs, py)?)?;

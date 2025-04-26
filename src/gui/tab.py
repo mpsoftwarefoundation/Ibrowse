@@ -49,7 +49,14 @@ class Tab(QWidget):
         nav_bar.layout().addWidget(self._search_bar)
         nav_bar.layout().addWidget(menu_btn)
 
+        profile = QWebEngineProfile('PersistentProfile', self)
+        profile.setPersistentCookiesPolicy(QWebEngineProfile.PersistentCookiesPolicy.ForcePersistentCookies)
+        profile.setCachePath(ibrowse.config_dir())
+        profile.setPersistentStoragePath(ibrowse.config_dir())
+
+        page = QWebEnginePage(profile, self)
         self._browser = QWebEngineView()
+        self._browser.setPage(page)
         self._browser.urlChanged.connect(self._search_bar.setUrl)
         self._browser.titleChanged.connect(self.updateTab)
         self._browser.iconChanged.connect(self.updateTab)
