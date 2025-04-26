@@ -156,6 +156,6 @@ fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(add_bookmark, py)?)?;
     m.add_function(wrap_pyfunction!(remove_bookmark, py)?)?;
     m.add_function(wrap_pyfunction!(set_previous_tabs, py)?)?;
-    m.add_function(wrap_pyfunction!(framework::browser::clear_caches, py)?)?;
+    m.add_function(wrap_pyfunction!(browser::clear_caches, py)?)?;
     Ok(())
 }
