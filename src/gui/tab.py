@@ -125,8 +125,10 @@ class Tab(QWidget):
             html = f.read()
 
         if html:
-            self._browser.setHtml(html)
+            self._browser.urlChanged.disconnect(self._search_bar.setUrl)
+            self._browser.setHtml(html, QUrl('about:blank'))
             self._browser.setFocus()
+            self._browser.urlChanged.connect(self._search_bar.setUrl)
 
         return self
 
