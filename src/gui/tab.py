@@ -1,9 +1,8 @@
 from src.imports import *
 from src.gui.widgets import SearchBar, EngineTypeCombo, ContextMenu
 from src.gui.dialogs import PasswordsDialog, GetBookmarkDialog
+from src.gui.web_engine import WebEnginePage
 from urllib.parse import urlparse
-import atexit
-import subprocess
 
 
 class Tab(QWidget):
@@ -57,9 +56,9 @@ class Tab(QWidget):
         profile.setCachePath(ibrowse.cache_dir())
         profile.setPersistentStoragePath(ibrowse.cache_dir())
 
-        page = QWebEnginePage(profile, self)
+        self._page = WebEnginePage(profile, self)
         self._browser = QWebEngineView()
-        self._browser.setPage(page)
+        self._browser.setPage(self._page)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
         reload_btn.clicked.connect(self._browser.reload)

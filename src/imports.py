@@ -5,4 +5,5 @@ from PyQt6.QtWebEngineWidgets import *
 from PyQt6.QtWebEngineCore import *
 import os
 import sys
+import subprocess
 import ibrowse
