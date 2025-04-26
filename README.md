@@ -3,6 +3,8 @@
 # Ibrowse
 _"Yeah man, Ibrowse!"_
 
+<img src="resources/demos/ibrowse_startup.png" style="border-radius: 20px; width: auto;">
+
 ## Overview
 Ibrowse is the browser for those who love:
 
