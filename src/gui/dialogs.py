@@ -45,14 +45,18 @@ class PasswordsDialog(QDialog):
 
         for url, value in ibrowse.passwords().items():
             item = QListWidgetItem(url)
+            item.url = url
             item.username = value[0]
             item.password = value[1]
 
             container = QWidget()
-            layout = QHBoxLayout(container)
-            layout.setContentsMargins(0, 0, 0, 0)
-            container.setLayout(layout)
+            container.setLayout(QHBoxLayout())
+            container.layout().setContentsMargins(0, 0, 0, 0)
 
+            edit_password_btn = QPushButton('✏️')
+            edit_password_btn.setFixedWidth(20)
+            edit_password_btn.setToolTip('Edit saved password')
+            edit_password_btn.clicked.connect(lambda _, i=item: self.editPassword(i))
             copy_username_btn = QPushButton('👤')
             copy_username_btn.setFixedWidth(20)
             copy_username_btn.setToolTip('Copy username')
@@ -66,6 +70,7 @@ class PasswordsDialog(QDialog):
             delete_btn.setToolTip('Delete password')
             delete_btn.clicked.connect(lambda _, i=item: self.deletePassword(i))
             container.layout().addStretch()
+            container.layout().addWidget(edit_password_btn)
             container.layout().addWidget(copy_username_btn)
             container.layout().addWidget(copy_password_btn)
             container.layout().addWidget(delete_btn)
@@ -76,13 +81,23 @@ class PasswordsDialog(QDialog):
             self.items.append((item, url))
 
     def addPassword(self):
-        dialog = CreateNewPasswordDialog(self)
+        dialog = CreatePasswordDialog(self)
         dialog.exec()
 
         self.createList()
 
     def deletePassword(self, item: QListWidgetItem):
         ibrowse.remove_password(item.text())
+
+        self.createList()
+
+    def editPassword(self, item: QListWidgetItem):
+        dialog = CreatePasswordDialog(self)
+        dialog.setWindowTitle('Edit Password')
+        dialog.url_input.setDefaultValue(item.url)
+        dialog.username_input.setDefaultValue(item.username)
+        dialog.password_input.setDefaultValue(item.password)
+        dialog.exec()
 
         self.createList()
 
@@ -94,7 +109,7 @@ class PasswordsDialog(QDialog):
             item.setHidden(not is_match)
 
 
-class CreateNewPasswordDialog(QDialog):
+class CreatePasswordDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Create New Password')
