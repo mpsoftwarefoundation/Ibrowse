@@ -252,7 +252,7 @@ class Tab(QWidget):
 
         ok = QMessageBox.question(self, 'Password', 'Use saved password for this site?')
 
-        if ok:
+        if ok == QMessageBox.StandardButton.Yes:
             username, password = creds
 
             js = f"""

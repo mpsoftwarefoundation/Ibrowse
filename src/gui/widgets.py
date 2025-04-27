@@ -45,6 +45,7 @@ class SearchBar(QLineEdit):
 
         self._completer = QCompleter(items)
         self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self._completer.setCompletionMode(QCompleter.CompletionMode.UnfilteredPopupCompletion)
         self.setCompleter(self._completer)
 
 
