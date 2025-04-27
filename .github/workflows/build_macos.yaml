@@ -24,24 +24,11 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Set up Rust targets
-        run: |
-          rustup target add aarch64-apple-darwin x86_64-apple-darwin
-
-      - name: Build Ibrowse bindings for both architectures
+      - name: Build Ibrowse bindings
         run: |
           pip install --upgrade pip
           pip install maturin
-          maturin build --target aarch64-apple-darwin --release --out target/wheels/arm64
-          maturin build --target x86_64-apple-darwin --release --out target/wheels/x86_64
-          
-          # Combine the two .so files using lipo
-          mkdir -p target/wheels/universal
-          
-          lipo -create \
-            target/wheels/arm64/*.so \
-            target/wheels/x86_64/*.so \
-            -output target/wheels/universal/ibrowse_universal.so
+          maturin build --release --universal2
 
       - name: Find built wheel
         id: find_wheel
