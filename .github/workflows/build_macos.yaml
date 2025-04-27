@@ -24,11 +24,17 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Build Ibrowse bindings
+      - name: Build universal (fat) Ibrowse binary
         run: |
           pip install --upgrade pip
           pip install maturin
-          maturin build --release --universal2
+          cargo install cargo-lipo
+          
+          # Build the fat universal2 binary
+          cargo lipo --release
+          
+          # Now package it into a wheel
+          maturin build --release --skip-build
 
       - name: Find built wheel
         id: find_wheel
