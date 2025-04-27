@@ -207,7 +207,7 @@ class Tab(QWidget):
             remove_btn = QPushButton('✕')
             remove_btn.setFixedWidth(20)
             remove_btn.setToolTip('Remove this bookmark')
-            remove_btn.clicked.connect(lambda _, u=action.url: self.removeBookmark(u, bookmarks_menu, action))
+            remove_btn.clicked.connect(lambda _, u=action.url: self.removeBookmark(u, self.bookmarks_menu, action))
 
             container.layout().addWidget(label)
             container.layout().addStretch()
