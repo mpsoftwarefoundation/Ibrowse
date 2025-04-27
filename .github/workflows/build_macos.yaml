@@ -24,35 +24,19 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Build universal (fat) Ibrowse binary
+      - name: Build Ibrowse bindings
         run: |
+          python -m venv .venv
+          source .venv/bin/activate
           pip install --upgrade pip
           pip install maturin
-          cargo install cargo-lipo
-          
-          # Build the fat universal2 binary
-          cargo lipo --release
-          
-          # Now package it into a wheel
-          maturin build --release --skip-build
-
-      - name: Find built wheel
-        id: find_wheel
-        run: echo "WHEEL_PATH=$(find target/wheels -name '*.whl' | head -n 1)" >> $GITHUB_ENV
+          maturin develop
 
       - name: Install project requirements
         run: |
-          pip install $WHEEL_PATH
+          source .venv/bin/activate
           pip install -r requirements.txt
           git clone https://github.com/ktechhydle/mp_software_stylesheets.git
-
-      - name: Replace ibrowse .so with universal binary
-        run: |
-          # Find the installed package location
-          SITE_PACKAGES=$(python3 -c "import site; print(site.getsitepackages()[0])")
-          
-          # Overwrite the non-fat binary with the universal one
-          cp target/wheels/universal/ibrowse_universal.so $SITE_PACKAGES/ibrowse/ibrowse.cpython-312-darwin.so
 
       - name: Build macOS app using PyInstaller
         run: |
