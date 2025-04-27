@@ -49,6 +49,89 @@ class SearchBar(QLineEdit):
         self.setCompleter(self._completer)
 
 
+class QuickSearchBar(QMenu):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowFlag(Qt.WindowType.Popup)
+        self.setObjectName('blankWidget')
+
+        self.createUI()
+
+    def exec(self, pos=None):
+        if pos:
+            super().exec(pos)
+            return
+
+        parent_center = self.parent().rect().center()
+        global_center = self.parent().mapToGlobal(parent_center)
+        target_width = 400
+        target_height = 50
+
+        start_rect = QRect(
+            global_center.x(),
+            global_center.y(),
+            1,
+            1
+        )
+        end_rect = QRect(
+            global_center.x() - target_width // 2,
+            global_center.y() - target_height // 2,
+            target_width,
+            target_height
+        )
+
+        self.setGeometry(start_rect)
+        self.container.setFixedSize(target_width, target_height)
+        self.updateCompleter()
+        self.startEditing()
+
+        self.show()
+
+        self.animation = QPropertyAnimation(self, b'geometry')
+        self.animation.setDuration(250)
+        self.animation.setStartValue(start_rect)
+        self.animation.setEndValue(end_rect)
+        self.animation.setEasingCurve(QEasingCurve.Type.OutCubic)
+        self.animation.start()
+
+    def createUI(self):
+        self.container = QWidget(self)
+        self.container.setLayout(QVBoxLayout())
+
+        self.search_box = QLineEdit()
+        self.search_box.setPlaceholderText('Search...')
+        self.search_box.setFixedSize(375, 30)
+        self.search_box.returnPressed.connect(lambda: self.search(self.search_box.text()))
+        self.container.layout().addWidget(self.search_box, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        widget_action = QWidgetAction(self)
+        widget_action.setDefaultWidget(self.container)
+
+        self.addAction(widget_action)
+
+    def search(self, text: str):
+        self.parent().search(text)
+        self.close()
+
+    def startEditing(self):
+        self.search_box.setFocus()
+        self.search_box.selectAll()
+
+    def setUrl(self, url):
+        self.search_box.setText(url)
+
+    def updateCompleter(self):
+        items = ['/exit', '/help', '/welcome']
+
+        for url, name in ibrowse.bookmarks().items():
+            items.append(url)
+
+        self._completer = QCompleter(items)
+        self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
+        self._completer.setCompletionMode(QCompleter.CompletionMode.UnfilteredPopupCompletion)
+        self.search_box.setCompleter(self._completer)
+
+
 class EngineTypeCombo(QComboBox):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -94,16 +177,14 @@ class ContextMenu(QMenu):
         if pos and self.animationEnabled():
             screen_rect = QApplication.primaryScreen().availableGeometry()
 
-            # Get the menu's size (this is available after it's created)
             menu_size = self.sizeHint()
 
-            # Check if the menu would go off the right or bottom of the screen
             if pos.x() + menu_size.width() > screen_rect.right():
                 pos.setX(screen_rect.right() - menu_size.width())
+
             if pos.y() + menu_size.height() > screen_rect.bottom():
                 pos.setY(screen_rect.bottom() - menu_size.height())
 
-            # If animation is enabled
             self.animation = QPropertyAnimation(self, b'pos')
             self.animation.setDuration(100)
             self.animation.setStartValue(QPoint(pos.x(), pos.y() + 10))

@@ -1,5 +1,5 @@
 from src.imports import *
-from src.gui.widgets import SearchBar, EngineTypeCombo, ContextMenu
+from src.gui.widgets import SearchBar, QuickSearchBar, EngineTypeCombo, ContextMenu
 from src.gui.dialogs import PasswordsDialog, GetBookmarkDialog
 from src.gui.web_engine import WebEnginePage, WebEngineView
 from urllib.parse import urlparse
@@ -102,7 +102,7 @@ class Tab(QWidget):
 
         quick_edit_action = QAction('Quick Edit', self)
         quick_edit_action.setShortcut(QKeySequence('Ctrl+Q'))
-        quick_edit_action.triggered.connect(self._search_bar.startEditing)
+        quick_edit_action.triggered.connect(self.quickSearch)
 
         self.addAction(new_tab_action)
         self.addAction(new_window_action)
@@ -139,6 +139,13 @@ class Tab(QWidget):
         self._search_bar.setText(query)
         self._browser.load(QUrl(query))
         self._browser.setFocus()
+
+    def quickSearch(self):
+        if not hasattr(self, 'quick_search_bar'):
+            self.quick_search_bar = QuickSearchBar(self)
+            self.quick_search_bar.setUrl(self._search_bar.text())
+
+        self.quick_search_bar.exec()
 
     def fromHtml(self, file_name: str):
         html = ''
