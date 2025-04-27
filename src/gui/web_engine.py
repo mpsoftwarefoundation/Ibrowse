@@ -17,4 +17,16 @@ class WebEngineView(QWebEngineView):
 
     def showMenu(self, event):
         menu = self.createStandardContextMenu()
+
+        self.pageAction(QWebEnginePage.WebAction.SavePage).triggered.connect(self.savePage)
+
         menu.exec(self.mapToGlobal(event))
+
+    def savePage(self):
+        filename, _ = QFileDialog.getSaveFileName(self,
+                                                  'Save Page',
+                                                  self.url().toString(),
+                                                  'HTML files (*.html *.htm)')
+
+        if filename:
+            ibrowse.write_html(filename, self.page().toHtml())
