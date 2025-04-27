@@ -207,7 +207,7 @@ class Tab(QWidget):
             self.menu.addSeparator()
             self.menu.addAction(clear_caches_action)
 
-        self.menu.popup(self.mapToGlobal(button.pos()))
+        self.menu.exec(self.mapToGlobal(button.pos()))
 
     def bookmark(self):
         dialog = GetBookmarkDialog(self)

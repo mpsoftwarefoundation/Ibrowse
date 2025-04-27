@@ -77,11 +77,8 @@ class EngineTypeCombo(QComboBox):
 class ContextMenu(QMenu):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
-        self.setObjectName('customMenu')
         self.setMinimumSize(150, 30)
 
-        self.radius = 10
         self._animation_enabled = False
 
     def addMenu(self, menu, parent=None):
@@ -92,18 +89,6 @@ class ContextMenu(QMenu):
             m = ContextMenu(menu, parent=None if parent is None else parent)
             super().addMenu(m)
             return m
-
-    def resizeEvent(self, event):
-        path = QPainterPath()
-        rect = QRectF(self.rect()).adjusted(.5, .5, -1.5, -1.5)
-        path.addRoundedRect(rect, self.radius, self.radius)
-
-        palette = self.palette()
-        palette.setColor(QPalette.ColorRole.Window, QColor(0, 0, 0, 200))  # Set the color
-        self.setPalette(palette)
-
-        region = QRegion(path.toFillPolygon(QTransform()).toPolygon())
-        self.setMask(region)
 
     def exec(self, pos=None):
         if pos and self.animationEnabled():
