@@ -111,7 +111,7 @@ class QuickSearchBar(QMenu):
 
     def search(self, text: str):
         self.parent().search(text)
-        self.close()
+        self.animateClose()
 
     def startEditing(self):
         self.search_box.setFocus()
@@ -130,6 +130,23 @@ class QuickSearchBar(QMenu):
         self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
         self._completer.setCompletionMode(QCompleter.CompletionMode.UnfilteredPopupCompletion)
         self.search_box.setCompleter(self._completer)
+
+    def animateClose(self):
+        current_geometry = self.geometry()
+        end_rect = QRect(
+            current_geometry.center().x(),
+            current_geometry.center().y(),
+            1,
+            1
+        )
+
+        self.close_animation = QPropertyAnimation(self, b'geometry')
+        self.close_animation.setDuration(200)
+        self.close_animation.setStartValue(current_geometry)
+        self.close_animation.setEndValue(end_rect)
+        self.close_animation.setEasingCurve(QEasingCurve.Type.InCubic)
+        self.close_animation.finished.connect(self.close)
+        self.close_animation.start()
 
 
 class EngineTypeCombo(QComboBox):
