@@ -28,5 +28,5 @@ class WebEngineView(QWebEngineView):
                                                   self.url().toString(),
                                                   'HTML files (*.html *.htm)')
 
-        if filename:
-            ibrowse.write_html(filename, self.page().toHtml())
+        if filename and filename.endswith(('.html', '.htm')):
+            ibrowse.write_html(filename, self.page().toHtml(print))
