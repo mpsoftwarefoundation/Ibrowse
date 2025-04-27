@@ -32,9 +32,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install maturin
-          # Build for ARM64
           maturin build --target aarch64-apple-darwin --release --out target/wheels/arm64
-          # Build for x86_64
           maturin build --target x86_64-apple-darwin --release --out target/wheels/x86_64
           
           # Combine the two .so files using lipo
@@ -47,7 +45,7 @@ jobs:
 
       - name: Find built wheel
         id: find_wheel
-        run: echo "WHEEL_PATH=$(find target/wheels/universal -name '*.whl' | head -n 1)" >> $GITHUB_ENV
+        run: echo "WHEEL_PATH=$(find target/wheels -name '*.whl' | head -n 1)" >> $GITHUB_ENV
 
       - name: Install project requirements
         run: |
