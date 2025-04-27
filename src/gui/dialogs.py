@@ -13,6 +13,11 @@ class PasswordsDialog(QDialog):
         self.createUI()
         self.createList()
 
+    def showEvent(self, event):
+        self.createList()
+
+        super().showEvent(event)
+
     def createUI(self):
         container = QWidget()
         container.setObjectName('searchBarButton')
@@ -26,14 +31,14 @@ class PasswordsDialog(QDialog):
         import_from_chrome_btn = QPushButton('📁')
         import_from_chrome_btn.setObjectName('searchBarButton')
         import_from_chrome_btn.clicked.connect(self.importFromChrome)
-        search_box = QLineEdit()
-        search_box.setFixedHeight(30)
-        search_box.setPlaceholderText('Search Passwords...')
-        search_box.textChanged.connect(self.searchPasswords)
+        self.search_box = QLineEdit()
+        self.search_box.setFixedHeight(30)
+        self.search_box.setPlaceholderText('Search Passwords...')
+        self.search_box.textChanged.connect(self.searchPasswords)
 
         container.layout().addWidget(add_password_btn)
         container.layout().addWidget(import_from_chrome_btn)
-        container.layout().addWidget(search_box)
+        container.layout().addWidget(self.search_box)
 
         self.password_list = QListWidget(self)
         self.password_list.setObjectName('listWidget')
@@ -88,6 +93,10 @@ class PasswordsDialog(QDialog):
 
             self.items.append((item, url))
 
+        if self.search_box.text():
+            self.searchPasswords(self.search_box.text())
+            return
+
     def addPassword(self):
         dialog = CreatePasswordDialog(self)
         dialog.exec()
@@ -113,8 +122,7 @@ class PasswordsDialog(QDialog):
         if dialog.url_input.value() != old:
             self.password_list.takeItem(self.password_list.row(item))
 
-        if dialog.result() == QDialog.accepted:
-            self.createList()
+        self.createList()
 
     def searchPasswords(self, text: str):
         text = text.lower()

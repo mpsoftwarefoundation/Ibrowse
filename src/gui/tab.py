@@ -92,6 +92,10 @@ class Tab(QWidget):
         new_window_action.setShortcut(QKeySequence('Ctrl+Shift+N'))
         new_window_action.triggered.connect(self.tab_view.parent().newWindow)
 
+        password_manager_action = QAction('Password Manager', self)
+        password_manager_action.setShortcut(QKeySequence('Ctrl+K'))
+        password_manager_action.triggered.connect(self._passwords_dialog.show)
+
         bookmark_tab_action = QAction('Bookmark This Tab', self)
         bookmark_tab_action.setShortcut(QKeySequence('Ctrl+B'))
         bookmark_tab_action.triggered.connect(self.bookmark)
@@ -102,6 +106,7 @@ class Tab(QWidget):
 
         self.addAction(new_tab_action)
         self.addAction(new_window_action)
+        self.addAction(password_manager_action)
         self.addAction(bookmark_tab_action)
         self.addAction(quick_edit_action)
 
@@ -172,28 +177,9 @@ class Tab(QWidget):
             bookmark_tab_action.triggered.connect(self.bookmark)
             passwords_action = QAction('Passwords...', self)
             passwords_action.triggered.connect(self._passwords_dialog.show)
-            bookmarks_menu = ContextMenu('Bookmarks', self)
 
-            for url, name in ibrowse.bookmarks().items():
-                action = QWidgetAction(self)
-                action.url = url
-                action.triggered.connect(lambda _, u=action.url: self.search(u))
-
-                container = QWidget()
-                container.setLayout(QHBoxLayout())
-                label = QLabel(name)
-                remove_btn = QPushButton('✕')
-                remove_btn.setFixedWidth(20)
-                remove_btn.setToolTip('Remove this bookmark')
-                remove_btn.clicked.connect(lambda _, u=action.url: self.removeBookmark(u, bookmarks_menu, action))
-
-                container.layout().addWidget(label)
-                container.layout().addStretch()
-                container.layout().addWidget(remove_btn)
-
-                action.setDefaultWidget(container)
-
-                bookmarks_menu.addAction(action)
+            if not hasattr(self, 'bookmarks_menu'):
+                self.bookmarks_menu = ContextMenu('Bookmarks', self)
 
             clear_caches_action = QAction('Clear Caches (Requires Restart)', self)
             clear_caches_action.triggered.connect(self.clearCaches)
@@ -204,9 +190,32 @@ class Tab(QWidget):
             self.menu.addAction(bookmark_tab_action)
             self.menu.addSeparator()
             self.menu.addAction(passwords_action)
-            self.menu.addMenu(bookmarks_menu)
+            self.menu.addMenu(self.bookmarks_menu)
             self.menu.addSeparator()
             self.menu.addAction(clear_caches_action)
+
+        self.bookmarks_menu.clear()
+
+        for url, name in ibrowse.bookmarks().items():
+            action = QWidgetAction(self)
+            action.url = url
+            action.triggered.connect(lambda _, u=action.url: self.search(u))
+
+            container = QWidget()
+            container.setLayout(QHBoxLayout())
+            label = QLabel(name)
+            remove_btn = QPushButton('✕')
+            remove_btn.setFixedWidth(20)
+            remove_btn.setToolTip('Remove this bookmark')
+            remove_btn.clicked.connect(lambda _, u=action.url: self.removeBookmark(u, bookmarks_menu, action))
+
+            container.layout().addWidget(label)
+            container.layout().addStretch()
+            container.layout().addWidget(remove_btn)
+
+            action.setDefaultWidget(container)
+
+            self.bookmarks_menu.addAction(action)
 
         self.menu.exec(self.mapToGlobal(button.pos()))
 
@@ -251,7 +260,8 @@ class Tab(QWidget):
         if not creds:
             return
 
-        ok = QMessageBox.question(self, 'Password', 'Use saved password for this site?')
+        # TODO: implement autofill
+        '''ok = QMessageBox.question(self, 'Password', 'Use saved password for this site?')
 
         if ok == QMessageBox.StandardButton.Yes:
             username, password = creds
@@ -278,7 +288,7 @@ class Tab(QWidget):
             }})();
             """
 
-            self._browser.page().runJavaScript(js)
+            self._browser.page().runJavaScript(js)'''
 
     def clearCaches(self):
         ok = QMessageBox.warning(self, 'Warning', 'Clearing caches will delete all browsing data!\n\n'
