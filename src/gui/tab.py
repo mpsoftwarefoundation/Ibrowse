@@ -1,7 +1,7 @@
 from src.imports import *
 from src.gui.widgets import SearchBar, EngineTypeCombo, ContextMenu
 from src.gui.dialogs import PasswordsDialog, GetBookmarkDialog
-from src.gui.web_engine import WebEnginePage
+from src.gui.web_engine import WebEnginePage, WebEngineView
 from urllib.parse import urlparse
 
 
@@ -57,7 +57,7 @@ class Tab(QWidget):
         profile.setPersistentStoragePath(ibrowse.cache_dir())
 
         self._page = WebEnginePage(profile, self)
-        self._browser = QWebEngineView()
+        self._browser = WebEngineView(self)
         self._browser.setPage(self._page)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
@@ -207,12 +207,12 @@ class Tab(QWidget):
             self.menu.addSeparator()
             self.menu.addAction(clear_caches_action)
 
-        self.menu.exec(self.mapToGlobal(button.pos()))
+        self.menu.popup(self.mapToGlobal(button.pos()))
 
     def bookmark(self):
         dialog = GetBookmarkDialog(self)
-        dialog.url_input.setDefaultValue(self.browser().url().toString())
-        dialog.input.setDefaultValue(self.browser().page().title())
+        dialog.url_input.setDefaultValue(self._browser.url().toString())
+        dialog.input.setDefaultValue(self._browser.page().title())
         dialog.exec()
 
         self._search_bar.updateCompleter()
