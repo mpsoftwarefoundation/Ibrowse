@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 
 
 class Tab(QWidget):
-    def __init__(self, tab_view: QTabWidget, url: str = '', parent=None):
+    def __init__(self, tab_view, url: str = '', parent=None):
         super().__init__(parent)
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(0, 0,0,0)
@@ -20,6 +20,9 @@ class Tab(QWidget):
 
         if url:
             self.search(url)
+
+    def close(self):
+        self.tab_view.closeTab(self.tab_view.indexOf(self))
 
     def createUI(self):
         nav_bar = QWidget()
@@ -92,6 +95,10 @@ class Tab(QWidget):
         new_window_action.setShortcut(QKeySequence('Ctrl+Shift+N'))
         new_window_action.triggered.connect(self.tab_view.parent().newWindow)
 
+        close_tab_action = QAction('Close Tab', self)
+        close_tab_action.setShortcut(QKeySequence('Ctrl+E'))
+        close_tab_action.triggered.connect(self.close)
+
         password_manager_action = QAction('Password Manager', self)
         password_manager_action.setShortcut(QKeySequence('Ctrl+K'))
         password_manager_action.triggered.connect(self._passwords_dialog.show)
@@ -106,6 +113,7 @@ class Tab(QWidget):
 
         self.addAction(new_tab_action)
         self.addAction(new_window_action)
+        self.addAction(close_tab_action)
         self.addAction(password_manager_action)
         self.addAction(bookmark_tab_action)
         self.addAction(quick_edit_action)
@@ -127,6 +135,9 @@ class Tab(QWidget):
             elif query == '/welcome':
                 self.tab_view.addTab(self.fromHtml('resources/pages/startup.html'), 'Help')
                 self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
+
+            elif query == '/close':
+                self.close()
 
             else:
                 self.tab_view.addTab(self.fromHtml('resources/pages/help.html'), 'Help')

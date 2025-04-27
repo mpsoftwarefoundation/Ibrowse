@@ -1,6 +1,13 @@
 from src.imports import *
 
 
+COMMANDS = ['/exit',
+            '/close',
+            '/help',
+            '/welcome',
+            ]
+
+
 class SearchBar(QLineEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -38,7 +45,7 @@ class SearchBar(QLineEdit):
         self.blockSignals(False)
 
     def updateCompleter(self):
-        items = ['/exit', '/help', '/welcome']
+        items = COMMANDS
 
         for url, name in ibrowse.bookmarks().items():
             items.append(url)
@@ -121,7 +128,7 @@ class QuickSearchBar(QMenu):
         self.search_box.setText(url)
 
     def updateCompleter(self):
-        items = ['/exit', '/help', '/welcome']
+        items = COMMANDS
 
         for url, name in ibrowse.bookmarks().items():
             items.append(url)
