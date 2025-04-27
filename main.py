@@ -24,6 +24,7 @@ class Ibrowse(QMainWindow):
                 tabs.append(tab.activeUrl().toString())
 
             ibrowse.set_previous_tabs(tabs)
+            ibrowse.set_preferred_browser(self.tab_view.currentWidget().engineCombo().currentText())
 
         else:
             ibrowse.set_previous_tabs([])

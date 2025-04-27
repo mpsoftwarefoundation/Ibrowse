@@ -41,6 +41,7 @@ class Tab(QWidget):
         menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
 
         self._engine_combo = EngineTypeCombo(self)
+        self._engine_combo.setCurrentText(ibrowse.preferred_browser())
         self._search_bar = SearchBar()
         self._search_bar.returnPressed.connect(lambda: self.search(self._search_bar.text()))
 
