@@ -41,6 +41,7 @@ class PasswordsDialog(QDialog):
         self.password_list.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.password_list.setWordWrap(True)
         self.password_list.setUniformItemSizes(True)
+        self.password_list.itemDoubleClicked.connect(self.editPassword)
 
         self.layout().addWidget(container)
         self.layout().addSpacing(10)
