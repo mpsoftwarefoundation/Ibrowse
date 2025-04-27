@@ -190,10 +190,10 @@ class CreatePasswordDialog(QDialog):
         self.close()
 
 
-class GetBookmarkDialog(QDialog):
+class CreateBookmarkDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Create New Value')
+        self.setWindowTitle('Create New Bookmark')
         self.setLayout(QVBoxLayout())
         self.resize(400, 300)
 

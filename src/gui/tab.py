@@ -1,6 +1,6 @@
 from src.imports import *
 from src.gui.widgets import SearchBar, QuickSearchBar, EngineTypeCombo, ContextMenu
-from src.gui.dialogs import PasswordsDialog, GetBookmarkDialog
+from src.gui.dialogs import PasswordsDialog, CreateBookmarkDialog
 from src.gui.web_engine import WebEnginePage, WebEngineView
 from urllib.parse import urlparse
 
@@ -227,7 +227,7 @@ class Tab(QWidget):
         self.menu.exec(self.mapToGlobal(button.pos()))
 
     def bookmark(self):
-        dialog = GetBookmarkDialog(self)
+        dialog = CreateBookmarkDialog(self)
         dialog.url_input.setDefaultValue(self._browser.url().toString())
         dialog.input.setDefaultValue(self._browser.page().title())
         dialog.exec()
