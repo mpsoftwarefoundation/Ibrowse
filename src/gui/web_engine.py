@@ -1,5 +1,4 @@
 from src.imports import *
-from src.gui.widgets import ContextMenu
 
 
 class WebEnginePage(QWebEnginePage):
@@ -9,5 +8,13 @@ class WebEnginePage(QWebEnginePage):
 
 
 class WebEngineView(QWebEngineView):
-    def __init__(self, parent=None):
+    def __init__(self, page: WebEnginePage, parent=None):
         super().__init__(parent)
+        self.setPage(page)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+
+        self.customContextMenuRequested.connect(self.showMenu)
+
+    def showMenu(self, event):
+        menu = self.createStandardContextMenu()
+        menu.exec(self.mapToGlobal(event))

@@ -61,8 +61,7 @@ class Tab(QWidget):
         profile.setPersistentStoragePath(ibrowse.cache_dir())
 
         self._page = WebEnginePage(profile, self)
-        self._browser = WebEngineView(self)
-        self._browser.setPage(self._page)
+        self._browser = WebEngineView(self._page, self)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
         reload_btn.clicked.connect(self._browser.reload)
@@ -341,6 +340,9 @@ os.mkdir(r"{ibrowse.config_dir()}/cache")
 
     def searchBar(self) -> SearchBar:
         return self._search_bar
+
+    def page(self) -> QWebEnginePage:
+        return self._page
 
     def browser(self) -> QWebEngineView:
         return self._browser
