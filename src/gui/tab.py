@@ -150,7 +150,7 @@ class Tab(QWidget):
     def fromHtml(self, file_name: str):
         html = ''
 
-        with open(file_name, 'r') as f:
+        with open(file_name, 'r', encoding='utf-8') as f:
             html = f.read()
 
         if html:
