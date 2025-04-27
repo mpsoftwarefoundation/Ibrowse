@@ -183,6 +183,18 @@ fn set_preferred_browser(browser: String) -> PyResult<()> {
     Ok(())
 }
 
+// Open an HTML in UTF-8 encoding and return a Python string of the contents
+#[pyfunction]
+fn read_html(file_name: &str) -> PyResult<String> {
+    let mut file = fs::File::open(file_name).map_err(
+        |e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Failed to open file: {}", e)))?;
+    let mut contents = String::new();
+
+    file.read_to_string(&mut contents).map_err(
+        |e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Failed to read file: {}", e)))?;
+    Ok(contents)
+}
+
 // Define the module and wrap functions
 #[pymodule]
 fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -199,5 +211,6 @@ fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(remove_bookmark, py)?)?;
     m.add_function(wrap_pyfunction!(set_previous_tabs, py)?)?;
     m.add_function(wrap_pyfunction!(set_preferred_browser, py)?)?;
+    m.add_function(wrap_pyfunction!(read_html, py)?)?;
     Ok(())
 }

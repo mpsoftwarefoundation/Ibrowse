@@ -123,12 +123,16 @@ class Tab(QWidget):
             elif query == '/help':
                 self.tab_view.addTab(self.fromHtml('resources/pages/help.html'), 'Help')
                 self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
-                return
 
             elif query == '/welcome':
                 self.tab_view.addTab(self.fromHtml('resources/pages/startup.html'), 'Help')
                 self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
-                return
+
+            else:
+                self.tab_view.addTab(self.fromHtml('resources/pages/help.html'), 'Help')
+                self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
+
+            return
 
         elif '.com' in query:
             query = f'https://{query}'
@@ -148,10 +152,7 @@ class Tab(QWidget):
         self.quick_search_bar.exec()
 
     def fromHtml(self, file_name: str):
-        html = ''
-
-        with open(file_name, 'r', encoding='utf-8') as f:
-            html = f.read()
+        html = ibrowse.read_html(file_name)
 
         if html:
             self._browser.urlChanged.disconnect(self._search_bar.setUrl)
