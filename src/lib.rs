@@ -82,7 +82,7 @@ fn config_dir() -> PyResult<String> {
 // Retrieve the cache dir of Ibrowse (.../ibrowse/cache)
 #[pyfunction]
 fn cache_dir() -> PyResult<String> {
-    let config_dir = dirs::config_dir()
+    let config_dir = dirs::cache_dir()
         .unwrap_or_else(|| std::env::temp_dir())
         .join("ibrowse")
         .join("cache");
