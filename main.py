@@ -1,5 +1,3 @@
-import sys
-
 from src.imports import *
 from src.gui.tab import Tab
 from src.gui.tab_view import PageTabWidget
@@ -7,11 +5,20 @@ from mp_software_stylesheets.styles import IBROWSECSS
 
 
 class Ibrowse(QMainWindow):
-    def __init__(self):
+    def __init__(self, profile=None):
         super().__init__()
         self.setWindowTitle('Ibrowse')
         self.setWindowIcon(QIcon('resources/icons/ibrowse_icon.svg'))
         self.resize(1000, 800)
+
+        if profile:
+            self._profile = profile
+
+        else:
+            self._profile = QWebEngineProfile('PersistentProfile', self)
+            self._profile.setPersistentCookiesPolicy(QWebEngineProfile.PersistentCookiesPolicy.ForcePersistentCookies)
+            self._profile.setCachePath(ibrowse.cache_dir())
+            self._profile.setPersistentStoragePath(ibrowse.cache_dir())
 
         self.createUI()
 
@@ -42,48 +49,51 @@ class Ibrowse(QMainWindow):
                 if not 'https' in url:
                     break
 
-                tab = Tab(self.tab_view, url=url, parent=self)
+                tab = Tab(self.tab_view, self._profile, url=url, parent=self)
                 self.tab_view.addTab(tab, '')
 
             return
 
         self.tab_view.addTab(
-            Tab(self.tab_view, parent=self).fromHtml('resources/pages/startup.html'),
+            Tab(self.tab_view, self._profile, parent=self).fromHtml('resources/pages/startup.html'),
             'Welcome'
         )
 
     def loadDefaultTab(self):
         self.tab_view.addTab(
-            Tab(self.tab_view, parent=self).fromHtml('resources/pages/startup.html'),
+            Tab(self.tab_view, self._profile, parent=self).fromHtml('resources/pages/startup.html'),
             'Welcome'
         )
 
     def openFromArg(self, arg: str):
         if os.path.exists(arg):
-            tab = Tab(self.tab_view, parent=self).fromHtml(arg)
+            tab = Tab(self.tab_view, self._profile, parent=self).fromHtml(arg)
 
             self.tab_view.addTab(tab, 'File')
             self.tab_view.setCurrentWidget(tab)
 
         else:
-            tab = Tab(self.tab_view, url=arg, parent=self)
+            tab = Tab(self.tab_view, self._profile, url=arg, parent=self)
 
             self.tab_view.addTab(tab, '')
             self.tab_view.setCurrentWidget(tab)
 
     def newWindow(self):
-        window = Ibrowse()
+        window = Ibrowse(self._profile)
         window.show()
         window.loadDefaultTab()
 
         self.window = window
 
     def newWindowFromUrl(self, url: QUrl):
-        window = Ibrowse()
+        window = Ibrowse(self._profile)
         window.show()
         window.tab_view.newTabFromUrl(url)
 
         self.window = window
+
+    def profile(self):
+        return self._profile
 
 
 def main():

@@ -62,7 +62,7 @@ class WebEngineView(QWebEngineView):
         pass
 
     def openLinkInNewTab(self, data: QWebEngineContextMenuRequest):
-        self.tab_view.newTabFromUrl(data.mediaUrl())
+        self.tab_view.newTabFromUrl(data.linkUrl())
 
     def openLinkInNewWindow(self, data: QWebEngineContextMenuRequest):
-        self.tab_view.parent().newWindowFromUrl(data.mediaUrl())
+        self.tab_view.parent().newWindowFromUrl(data.linkUrl())

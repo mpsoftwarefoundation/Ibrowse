@@ -34,15 +34,14 @@ class PageTabWidget(QTabWidget):
         self.currentWidget().browser().back()
 
     def newTab(self):
-        tab = Tab(self, parent=self).fromHtml('resources/pages/new_tab.html')
+        tab = Tab(self, self.parent().profile(), parent=self).fromHtml('resources/pages/new_tab.html')
         self.addTab(tab, 'New Tab')
         self.setCurrentIndex(self.count() - 1)
 
         QTimer.singleShot(300, self.startEditing)
 
     def newTabFromUrl(self, url: QUrl):
-        tab = Tab(self, parent=self)
-        tab.search(url.toString())
+        tab = Tab(self, self.parent().profile(), url=url.toString(), parent=self)
         self.addTab(tab, '')
         self.setCurrentIndex(self.count() - 1)
 

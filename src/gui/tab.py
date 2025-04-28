@@ -6,12 +6,13 @@ from urllib.parse import urlparse
 
 
 class Tab(QWidget):
-    def __init__(self, tab_view, url: str = '', parent=None):
+    def __init__(self, tab_view, profile, url: str = '', parent=None):
         super().__init__(parent)
         self.setLayout(QVBoxLayout())
         self.layout().setContentsMargins(0, 0,0,0)
 
         self.tab_view = tab_view
+        self.profile = profile
         self._passwords_dialog = PasswordsDialog(self)
 
         self.createUI()
@@ -55,12 +56,7 @@ class Tab(QWidget):
         nav_bar.layout().addWidget(self._search_bar)
         nav_bar.layout().addWidget(menu_btn)
 
-        profile = QWebEngineProfile('PersistentProfile', self)
-        profile.setPersistentCookiesPolicy(QWebEngineProfile.PersistentCookiesPolicy.ForcePersistentCookies)
-        profile.setCachePath(ibrowse.cache_dir())
-        profile.setPersistentStoragePath(ibrowse.cache_dir())
-
-        self._page = WebEnginePage(profile, self)
+        self._page = WebEnginePage(self.profile, self)
         self._browser = WebEngineView(self._page, self.tab_view, self)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
