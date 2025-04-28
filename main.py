@@ -83,6 +83,8 @@ class Ibrowse(QMainWindow):
         window.show()
         window.loadDefaultTab()
 
+        QTimer.singleShot(300, window.tab_view.startEditing)
+
         self.window = window
 
     def newWindowFromUrl(self, url: QUrl):
