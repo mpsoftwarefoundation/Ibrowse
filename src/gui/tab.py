@@ -1,15 +1,15 @@
 from src.imports import *
-from src.gui.widgets import SearchBar, QuickSearchBar, EngineTypeCombo, ContextMenu
 from src.gui.dialogs import PasswordsDialog, CreateBookmarkDialog
 from src.gui.web_engine import WebEnginePage, WebEngineView
+from src.gui.widgets import SearchBar, QuickSearchBar, EngineTypeCombo, ContextMenu
 from urllib.parse import urlparse
 
 
 class Tab(QWidget):
-    def __init__(self, tab_view, profile, url: str = '', parent=None):
+    def __init__(self, tab_view, profile: QWebEngineProfile, url: str = '', parent=None):
         super().__init__(parent)
         self.setLayout(QVBoxLayout())
-        self.layout().setContentsMargins(0, 0,0,0)
+        self.layout().setContentsMargins(0, 0, 0, 0)
 
         self.tab_view = tab_view
         self.profile = profile
@@ -305,11 +305,15 @@ class Tab(QWidget):
             self._browser.page().runJavaScript(js)'''
 
     def clearCaches(self):
-        ok = QMessageBox.warning(self, 'Warning', 'Clearing caches will delete all browsing data!\n\n'
-                                                   'This process is safe, but you will be logged out of all '
-                                                   'websites. Are you sure you want to do this?')
+        ok = QMessageBox.warning(self,
+                                 'Warning',
+                                 'Clearing caches will delete all browsing data!\n\n'
+                                 'This process is safe, but you will be logged out of all '
+                                 'websites and cookies will be deleted. Are you sure you want '
+                                 'to do this?',
+                                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
 
-        if ok:
+        if ok == QMessageBox.StandardButton.Yes:
             clear_script = os.path.join(ibrowse.config_dir(), 'clear_caches.py')
 
             with open(clear_script, "w") as f:
