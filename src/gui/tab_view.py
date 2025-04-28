@@ -40,6 +40,12 @@ class PageTabWidget(QTabWidget):
 
         QTimer.singleShot(300, self.startEditing)
 
+    def newTabFromUrl(self, url: QUrl):
+        tab = Tab(self, parent=self)
+        tab.search(url.toString())
+        self.addTab(tab, '')
+        self.setCurrentIndex(self.count() - 1)
+
     def closeTab(self, index: int):
         if self.count() == 1:
             self.removeTab(index)

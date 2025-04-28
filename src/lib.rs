@@ -211,6 +211,22 @@ fn write_html(file_name: &str, contents: &str) -> PyResult<()> {
     Ok(())
 }
 
+// Write Python bytes to a file
+#[pyfunction]
+fn write_bytes(file_name: &str, contents: &[u8]) -> PyResult<()> {
+    let mut file = fs::File::create(file_name)
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(
+            format!("Failed to create file: {}", e)
+        ))?;
+
+    file.write_all(contents)
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(
+            format!("Failed to write to file: {}", e)
+        ))?;
+
+    Ok(())
+}
+
 // Define the module and wrap functions
 #[pymodule]
 fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
@@ -229,5 +245,6 @@ fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(set_preferred_browser, py)?)?;
     m.add_function(wrap_pyfunction!(read_html, py)?)?;
     m.add_function(wrap_pyfunction!(write_html, py)?)?;
+    m.add_function(wrap_pyfunction!(write_bytes, py)?)?;
     Ok(())
 }

@@ -78,6 +78,13 @@ class Ibrowse(QMainWindow):
 
         self.window = window
 
+    def newWindowFromUrl(self, url: QUrl):
+        window = Ibrowse()
+        window.show()
+        window.tab_view.newTabFromUrl(url)
+
+        self.window = window
+
 
 def main():
     app = QApplication(sys.argv)

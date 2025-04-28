@@ -61,7 +61,7 @@ class Tab(QWidget):
         profile.setPersistentStoragePath(ibrowse.cache_dir())
 
         self._page = WebEnginePage(profile, self)
-        self._browser = WebEngineView(self._page, self)
+        self._browser = WebEngineView(self._page, self.tab_view, self)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
         reload_btn.clicked.connect(self._browser.reload)
