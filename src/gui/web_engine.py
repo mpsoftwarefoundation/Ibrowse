@@ -1,5 +1,3 @@
-import requests
-
 from src.imports import *
 
 
@@ -27,6 +25,11 @@ class WebEngineView(QWebEngineView):
         menu.removeAction(self.pageAction(QWebEnginePage.WebAction.InspectElement))
         menu.removeAction(self.pageAction(QWebEnginePage.WebAction.ViewSource))
         data = self.lastContextMenuRequest()
+
+        menu.addSeparator()
+
+        print_action = menu.addAction('Print Page')
+        print_action.triggered.connect(self.printPage)
 
         if not hasattr(self, 'connected_actions'):
             self.connected_actions = True

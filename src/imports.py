@@ -3,8 +3,10 @@ from PyQt6.QtGui import *
 from PyQt6.QtCore import *
 from PyQt6.QtWebEngineWidgets import *
 from PyQt6.QtWebEngineCore import *
+from PyQt6.QtPrintSupport import *
 import os
 import sys
-import subprocess
 import csv
+import subprocess
+import requests
 import ibrowse
