@@ -19,8 +19,6 @@ class WebEngineView(QWebEngineView):
 
     def showMenu(self, pos: QPoint):
         menu = self.createStandardContextMenu()
-        menu.removeAction(self.pageAction(QWebEnginePage.WebAction.CopyImageToClipboard))
-        menu.removeAction(self.pageAction(QWebEnginePage.WebAction.CopyImageUrlToClipboard))
         menu.removeAction(self.pageAction(QWebEnginePage.WebAction.DownloadLinkToDisk))
         menu.removeAction(self.pageAction(QWebEnginePage.WebAction.InspectElement))
         menu.removeAction(self.pageAction(QWebEnginePage.WebAction.ViewSource))
@@ -28,15 +26,29 @@ class WebEngineView(QWebEngineView):
 
         menu.addSeparator()
 
-        print_action = menu.addAction('Print Page')
+        print_action = menu.addAction('Print...')
         print_action.triggered.connect(self.printPage)
 
         if not hasattr(self, 'connected_actions'):
             self.connected_actions = True
-            self.pageAction(QWebEnginePage.WebAction.SavePage).triggered.connect(self.savePage)
-            self.pageAction(QWebEnginePage.WebAction.DownloadImageToDisk).triggered.connect(lambda: self.saveImage(data))
-            self.pageAction(QWebEnginePage.WebAction.OpenLinkInNewTab).triggered.connect(lambda: self.openLinkInNewTab(data))
-            self.pageAction(QWebEnginePage.WebAction.OpenLinkInNewWindow).triggered.connect(lambda: self.openLinkInNewWindow(data))
+            self.pageAction(
+                QWebEnginePage.WebAction.SavePage
+            ).triggered.connect(self.savePage)
+            self.pageAction(
+                QWebEnginePage.WebAction.DownloadImageToDisk
+            ).triggered.connect(lambda: self.saveImage(data))
+            self.pageAction(
+                QWebEnginePage.WebAction.OpenLinkInNewTab
+            ).triggered.connect(lambda: self.openLinkInNewTab(data))
+            self.pageAction(
+                QWebEnginePage.WebAction.OpenLinkInNewWindow
+            ).triggered.connect(lambda: self.openLinkInNewWindow(data))
+            self.pageAction(
+                QWebEnginePage.WebAction.CopyImageToClipboard
+            ).triggered.connect(lambda: self.copyImage(data))
+            self.pageAction(
+                QWebEnginePage.WebAction.CopyImageUrlToClipboard
+            ).triggered.connect(lambda: self.copyImageUrl(data))
 
         menu.exec(self.mapToGlobal(pos))
 
@@ -52,14 +64,32 @@ class WebEngineView(QWebEngineView):
     def saveImage(self, data: QWebEngineContextMenuRequest):
         response = requests.get(data.mediaUrl().toString())
 
-        url_filename = data.mediaUrl().toString().split('/')[-1]
-        filename, _ = QFileDialog.getSaveFileName(self,
-                                                  'Save Image As',
-                                                  url_filename,
-                                                  'All files (*.)')
+        if response.status_code == 200:
+            url_filename = data.mediaUrl().toString().split('/')[-1]
+            filename, _ = QFileDialog.getSaveFileName(self,
+                                                      'Save Image As',
+                                                      url_filename,
+                                                      'All files (*.)')
 
-        if filename and '.' in filename:
-            ibrowse.write_bytes(filename, response.content)
+            if filename and '.' in filename:
+                ibrowse.write_bytes(filename, response.content)
+
+    def copyImage(self, data: QWebEngineContextMenuRequest):
+        image_url = data.mediaUrl().toString()
+        response = requests.get(image_url)
+
+        if response.status_code == 200:
+            image = QImage.fromData(response.content)
+
+            if not image.isNull():
+                clipboard = QApplication.clipboard()
+                clipboard.setImage(image)
+
+    def copyImageUrl(self, data: QWebEngineContextMenuRequest):
+        image_url = data.mediaUrl().toString()
+
+        clipboard = QApplication.clipboard()
+        clipboard.setText(image_url)
 
     def printPage(self, data: QWebEngineContextMenuRequest):
         pass
