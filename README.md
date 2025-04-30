@@ -8,15 +8,15 @@ _"Yeah man, Ibrowse!"_
 ## Overview
 Ibrowse is the browser for those who love:
 
-- **Minimalism🎛️** Ibrowse has a very lightweight UI and doesn't bombard you with actions and widgets.
+- **Minimalism 🎛️** Ibrowse has a very lightweight UI and doesn't bombard you with actions and widgets.
 
-- **Security🔐** Ibrowse is incredibly secure, as everything from cookies to passwords are stored on your local machine.
+- **Security 🔐** Ibrowse is incredibly secure, as everything from bookmarks to passwords are stored on your local machine.
 
-- **Ease Of Use🍰** Ibrowse doesn't require special knowledge to use it, you can cut to the chase and start browsing!
+- **Ease Of Use 🍰** Ibrowse doesn't require special knowledge to use it, you can cut to the chase and start browsing!
 
 ## Speed
 Ibrowse' GUI is implemented in Python/PyQt, while a Rust backend handles things like
-user passwords, bookmarks, and recent tabs. This makes Ibrowse very fast for users.
+user data, caches, and tabs storage. This makes Ibrowse incredibly fast for users.
 
 ## Free And Open-Source
 Ibrowse is 100% free with no drawbacks or limitations. There is no "premium" version; you get
