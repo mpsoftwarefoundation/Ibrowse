@@ -28,7 +28,7 @@ class TabView(QTabWidget):
     def createActions(self):
         new_tab_action = self.addAction('New Tab')
         new_tab_action.setShortcut(QKeySequence('Ctrl+N'))
-        new_tab_action.triggered.connect(self.newTab)
+        new_tab_action.triggered.connect(self.insertNewTab)
 
         new_window_action = self.addAction('New Window')
         new_window_action.setShortcut(QKeySequence('Ctrl+Shift+N'))
@@ -66,9 +66,16 @@ class TabView(QTabWidget):
     def back(self):
         self.currentWidget().browser().back()
 
-    def newTab(self):
+    def insertNewTab(self):
         tab = Tab(self, self.parent().profile(), parent=self).fromHtml('resources/pages/new_tab.html')
         self.insertTab(self.currentIndex() + 1, tab, 'New Tab')
+        self.setCurrentIndex(self.indexOf(tab))
+
+        QTimer.singleShot(300, self.startEditing)
+
+    def newTab(self):
+        tab = Tab(self, self.parent().profile(), parent=self).fromHtml('resources/pages/new_tab.html')
+        self.addTab(tab, 'New Tab')
         self.setCurrentIndex(self.indexOf(tab))
 
         QTimer.singleShot(300, self.startEditing)

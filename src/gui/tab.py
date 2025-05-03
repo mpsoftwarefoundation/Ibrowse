@@ -157,7 +157,7 @@ class Tab(QWidget):
             self.menu.setAnimationEnabled(True)
 
             new_tab_action = QAction('New Tab', self)
-            new_tab_action.triggered.connect(self.tab_view.newTab)
+            new_tab_action.triggered.connect(self.tab_view.insertNewTab)
             new_window_action = QAction('New Window', self)
             new_window_action.triggered.connect(self.tab_view.parent().newWindow)
             bookmark_tab_action = QAction('Bookmark This Tab', self)
