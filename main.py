@@ -4,6 +4,10 @@ from src.gui.tab_view import TabView
 from mp_software_stylesheets.styles import IBROWSECSS
 
 
+if getattr(sys, 'frozen', False):
+    os.chdir(sys._MEIPASS)
+
+
 class Ibrowse(QMainWindow):
     def __init__(self, profile=None):
         super().__init__()
