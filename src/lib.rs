@@ -14,6 +14,7 @@ struct BrowserConfig {
     bookmarks: HashMap<String, String>,
     previous_tabs: Vec<String>,
     preferred_browser: String,
+    smooth_scrolling: bool,
 }
 
 impl Default for BrowserConfig {
@@ -23,6 +24,7 @@ impl Default for BrowserConfig {
             bookmarks: HashMap::new(),
             previous_tabs: vec![],
             preferred_browser: String::new(),
+            smooth_scrolling: false,
         }
     }
 }
@@ -122,6 +124,14 @@ fn preferred_browser() -> PyResult<String> {
     Ok(config.preferred_browser)
 }
 
+// Get smooth scrolling enabled
+#[pyfunction]
+fn smooth_scrolling_enabled() -> PyResult<bool> {
+    let config = load_config();
+
+    Ok(config.smooth_scrolling)
+}
+
 // Append a password object with url, username, and password to config.json
 #[pyfunction]
 fn add_password(url: &str, username: &str, password: &str) -> PyResult<()> {
@@ -183,6 +193,16 @@ fn set_preferred_browser(browser: String) -> PyResult<()> {
     Ok(())
 }
 
+// Set smooth scrolling enabled
+#[pyfunction]
+fn set_smooth_scrolling(enabled: bool) -> PyResult<()> {
+    let mut config = load_config();
+    config.smooth_scrolling = enabled;
+
+    save_config(&config);
+    Ok(())
+}
+
 // Open an HTML in UTF-8 encoding and return a Python string of the contents
 #[pyfunction]
 fn read_html(file_name: &str) -> PyResult<String> {
@@ -237,12 +257,14 @@ fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(bookmarks, py)?)?;
     m.add_function(wrap_pyfunction!(previous_tabs, py)?)?;
     m.add_function(wrap_pyfunction!(preferred_browser, py)?)?;
+    m.add_function(wrap_pyfunction!(smooth_scrolling_enabled, py)?)?;
     m.add_function(wrap_pyfunction!(add_password, py)?)?;
     m.add_function(wrap_pyfunction!(remove_password, py)?)?;
     m.add_function(wrap_pyfunction!(add_bookmark, py)?)?;
     m.add_function(wrap_pyfunction!(remove_bookmark, py)?)?;
     m.add_function(wrap_pyfunction!(set_previous_tabs, py)?)?;
     m.add_function(wrap_pyfunction!(set_preferred_browser, py)?)?;
+    m.add_function(wrap_pyfunction!(set_smooth_scrolling, py)?)?;
     m.add_function(wrap_pyfunction!(read_html, py)?)?;
     m.add_function(wrap_pyfunction!(write_html, py)?)?;
     m.add_function(wrap_pyfunction!(write_bytes, py)?)?;

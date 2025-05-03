@@ -84,6 +84,7 @@ class Tab(QWidget):
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ScreenCaptureEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalStorageEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ScrollAnimatorEnabled, ibrowse.smooth_scrolling_enabled())
 
     def search(self, query: str):
         query = query.strip()
@@ -167,6 +168,10 @@ class Tab(QWidget):
             if not hasattr(self, 'bookmarks_menu'):
                 self.bookmarks_menu = ContextMenu('Bookmarks', self)
 
+            smooth_scrolling_action = QAction('Smooth Scrolling (Requires Restart)', self)
+            smooth_scrolling_action.setCheckable(True)
+            smooth_scrolling_action.setChecked(ibrowse.smooth_scrolling_enabled())
+            smooth_scrolling_action.triggered.connect(lambda: self.enableSmoothScrolling(smooth_scrolling_action))
             clear_caches_action = QAction('Clear Caches (Requires Restart)', self)
             clear_caches_action.triggered.connect(self.clearCaches)
 
@@ -178,6 +183,7 @@ class Tab(QWidget):
             self.menu.addAction(passwords_action)
             self.menu.addMenu(self.bookmarks_menu)
             self.menu.addSeparator()
+            self.menu.addAction(smooth_scrolling_action)
             self.menu.addAction(clear_caches_action)
 
         self.bookmarks_menu.clear()
@@ -219,6 +225,11 @@ class Tab(QWidget):
         menu.removeAction(action)
         self._search_bar.updateCompleter()
 
+    def enableSmoothScrolling(self, action: QAction):
+        ibrowse.set_smooth_scrolling(action.isChecked())
+
+        self.tab_view.parent().restart()
+
     def clearCaches(self):
         ok = QMessageBox.warning(self,
                                  'Warning',
@@ -248,7 +259,8 @@ os.mkdir(r"{ibrowse.config_dir()}/cache")
             """)
 
             subprocess.Popen([sys.executable, clear_script], close_fds=True)
-            QApplication.quit()
+
+            self.tab_view.parent().restart()
 
     def engineCombo(self) -> EngineTypeCombo:
         return self._engine_combo
