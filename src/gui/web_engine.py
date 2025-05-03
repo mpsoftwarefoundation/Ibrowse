@@ -1,4 +1,5 @@
 from src.imports import *
+from urllib.parse import urlparse
 
 
 class WebEnginePage(QWebEnginePage):
@@ -28,6 +29,16 @@ class WebEngineView(QWebEngineView):
 
         print_action = menu.addAction('Print...')
         print_action.triggered.connect(self.printPage)
+
+        if self.pageAction(QWebEnginePage.WebAction.Paste) in menu.actions():  # we can paste stuff
+            paste_username_action = QAction('Paste Username', self)
+            paste_username_action.triggered.connect(self.pasteUsername)
+
+            paste_password_action = QAction('Paste Password', self)
+            paste_password_action.triggered.connect(self.pastePassword)
+
+            menu.insertAction(self.pageAction(QWebEnginePage.WebAction.PasteAndMatchStyle), paste_username_action)
+            menu.insertAction(self.pageAction(QWebEnginePage.WebAction.PasteAndMatchStyle), paste_password_action)
 
         if not hasattr(self, 'connected_actions'):
             self.connected_actions = True
@@ -94,8 +105,55 @@ class WebEngineView(QWebEngineView):
     def printPage(self, data: QWebEngineContextMenuRequest):
         pass
 
+    def pasteUsername(self, data: QWebEngineContextMenuRequest):
+        username = None
+
+        for url, value in ibrowse.passwords().items():
+            if self.normalizeUrl(url) == self.normalizeUrl(self.url().toString()):
+                username = value[0]
+
+        if username:
+            script = f"""
+                (function() {{
+                    const focusedElement = document.activeElement;
+                    if (focusedElement) {{
+                        focusedElement.value = '{username}';
+                        focusedElement.selectionStart = focusedElement.selectionEnd = '{len(username)}';
+                        focusedElement.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                    }}
+                }})();
+            """
+            self.page().runJavaScript(script)
+
+    def pastePassword(self, data: QWebEngineContextMenuRequest):
+        password = None
+
+        for url, value in ibrowse.passwords().items():
+            if self.normalizeUrl(url) == self.normalizeUrl(self.url().toString()):
+                password = value[1]
+
+        if password:
+            script = f"""
+                (function() {{
+                    const focusedElement = document.activeElement;
+                    if (focusedElement) {{
+                        focusedElement.value = '{password}';
+                        focusedElement.selectionStart = focusedElement.selectionEnd = '{len(password)}';
+                        focusedElement.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                    }}
+                }})();
+            """
+            self.page().runJavaScript(script)
+
     def openLinkInNewTab(self, data: QWebEngineContextMenuRequest):
         self.tab_view.newTabFromUrl(data.linkUrl())
 
     def openLinkInNewWindow(self, data: QWebEngineContextMenuRequest):
         self.tab_view.parent().newWindowFromUrl(data.linkUrl())
+
+    def normalizeUrl(self, url: str):
+        parsed = urlparse(url if '://' in url else 'https://' + url)
+        netloc = parsed.netloc.lower()
+        path = parsed.path.rstrip('/')
+
+        return f'{netloc}{path}'

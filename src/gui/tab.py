@@ -17,7 +17,6 @@ class Tab(QWidget):
 
         self.createUI()
         self.createBrowser()
-        self.createActions()
 
         if url:
             self.search(url)
@@ -34,19 +33,25 @@ class Tab(QWidget):
         back_btn = QPushButton('◀')
         back_btn.setObjectName('searchBarButton')
         back_btn.setShortcut(QKeySequence('Ctrl+left'))
+        back_btn.setToolTip('Navigate backwards')
         forward_btn = QPushButton('▶')
         forward_btn.setObjectName('searchBarButton')
         forward_btn.setShortcut(QKeySequence('Ctrl+right'))
+        forward_btn.setToolTip('Navigate forwards')
         reload_btn = QPushButton('↻')
         reload_btn.setObjectName('searchBarButton')
         reload_btn.setShortcut(QKeySequence('Ctrl+R'))
+        reload_btn.setToolTip('Reload the current page')
         menu_btn = QPushButton('···')
         menu_btn.setObjectName('searchBarButton')
+        menu_btn.setToolTip('Ibrowse menu')
         menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
 
         self._engine_combo = EngineTypeCombo(self)
         self._engine_combo.setCurrentText(ibrowse.preferred_browser())
+        self._engine_combo.setToolTip('Change the preferred search engine')
         self._search_bar = SearchBar()
+        self._search_bar.setToolTip('Enter a url or search query')
         self._search_bar.returnPressed.connect(lambda: self.search(self._search_bar.text()))
 
         nav_bar.layout().addWidget(back_btn)
@@ -70,7 +75,6 @@ class Tab(QWidget):
         self._browser.titleChanged.connect(self.updateTab)
         self._browser.iconChanged.connect(self.updateTab)
         self._browser.loadFinished.connect(self.updateTab)
-        self._browser.loadFinished.connect(self.tryAutoFillPassword)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.AutoLoadIconsForPage, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.AutoLoadImages, True)
@@ -80,38 +84,6 @@ class Tab(QWidget):
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ScreenCaptureEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalStorageEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
-
-    def createActions(self):
-        new_tab_action = QAction('New Tab', self)
-        new_tab_action.setShortcut(QKeySequence('Ctrl+N'))
-        new_tab_action.triggered.connect(self.tab_view.newTab)
-
-        new_window_action = QAction('New Window', self)
-        new_window_action.setShortcut(QKeySequence('Ctrl+Shift+N'))
-        new_window_action.triggered.connect(self.tab_view.parent().newWindow)
-
-        close_tab_action = QAction('Close Tab', self)
-        close_tab_action.setShortcut(QKeySequence('Ctrl+E'))
-        close_tab_action.triggered.connect(self.close)
-
-        password_manager_action = QAction('Password Manager', self)
-        password_manager_action.setShortcut(QKeySequence('Ctrl+K'))
-        password_manager_action.triggered.connect(self._passwords_dialog.show)
-
-        bookmark_tab_action = QAction('Bookmark This Tab', self)
-        bookmark_tab_action.setShortcut(QKeySequence('Ctrl+B'))
-        bookmark_tab_action.triggered.connect(self.bookmark)
-
-        quick_edit_action = QAction('Quick Edit', self)
-        quick_edit_action.setShortcut(QKeySequence('Ctrl+Q'))
-        quick_edit_action.triggered.connect(self.quickSearch)
-
-        self.addAction(new_tab_action)
-        self.addAction(new_window_action)
-        self.addAction(close_tab_action)
-        self.addAction(password_manager_action)
-        self.addAction(bookmark_tab_action)
-        self.addAction(quick_edit_action)
 
     def search(self, query: str):
         query = query.strip()
@@ -247,63 +219,6 @@ class Tab(QWidget):
         menu.removeAction(action)
         self._search_bar.updateCompleter()
 
-    def tryAutoFillPassword(self, ok: bool):
-        if not ok:
-            return
-
-        full_url = self._browser.url().toString()
-        parsed = urlparse(full_url)
-        netloc = parsed.netloc.lower()
-        base_url = f"{parsed.scheme}://{netloc}"
-
-        passwords = ibrowse.passwords()
-        creds = None
-
-        if full_url in passwords:
-            creds = passwords[full_url]
-
-        elif base_url in passwords:
-            creds = passwords[base_url]
-
-        else:
-            for key in passwords:
-                if key in full_url:
-                    creds = passwords[key]
-                    break
-
-        if not creds:
-            return
-
-        # TODO: implement autofill
-        '''ok = QMessageBox.question(self, 'Password', 'Use saved password for this site?')
-
-        if ok == QMessageBox.StandardButton.Yes:
-            username, password = creds
-
-            js = f"""
-            (function autoFill(retries = 20) {{
-                if (retries === 0) return;
-    
-                const inputs = document.querySelectorAll('input');
-                let userField = null, passField = null;
-    
-                for (let i = 0; i < inputs.length; i++) {{
-                    const type = inputs[i].type.toLowerCase();
-                    if (!userField && (type === 'text' || type === 'email')) userField = inputs[i];
-                    if (!passField && type === 'password') passField = inputs[i];
-                }}
-    
-                if (userField && passField) {{
-                    userField.value = "{username}";
-                    passField.value = "{password}";
-                }} else {{
-                    setTimeout(() => autoFill(retries - 1), 300);
-                }}
-            }})();
-            """
-
-            self._browser.page().runJavaScript(js)'''
-
     def clearCaches(self):
         ok = QMessageBox.warning(self,
                                  'Warning',
@@ -343,6 +258,9 @@ os.mkdir(r"{ibrowse.config_dir()}/cache")
 
     def page(self) -> QWebEnginePage:
         return self._page
+
+    def passwordManager(self) -> PasswordsDialog:
+        return self._passwords_dialog
 
     def browser(self) -> QWebEngineView:
         return self._browser

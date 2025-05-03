@@ -1,6 +1,6 @@
 from src.imports import *
 from src.gui.tab import Tab
-from src.gui.tab_view import PageTabWidget
+from src.gui.tab_view import TabView
 from mp_software_stylesheets.styles import IBROWSECSS
 
 
@@ -39,7 +39,7 @@ class Ibrowse(QMainWindow):
         super().closeEvent(event)
 
     def createUI(self):
-        self.tab_view = PageTabWidget(self)
+        self.tab_view = TabView(self)
 
         self.setCentralWidget(self.tab_view)
 

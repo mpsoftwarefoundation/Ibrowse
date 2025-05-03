@@ -20,16 +20,18 @@ class PasswordsDialog(QDialog):
 
     def createUI(self):
         container = QWidget()
-        container.setObjectName('searchBarButton')
+        container.setObjectName('blankWidget')
         container.setLayout(QHBoxLayout())
         container.layout().setContentsMargins(0, 0, 0, 0)
 
         add_password_btn = QPushButton('+')
         add_password_btn.setObjectName('searchBarButton')
+        add_password_btn.setToolTip('Add a saved password')
         add_password_btn.setFixedWidth(25)
         add_password_btn.clicked.connect(self.addPassword)
         import_from_chrome_btn = QPushButton('📁')
         import_from_chrome_btn.setObjectName('searchBarButton')
+        import_from_chrome_btn.setToolTip('Import passwords from Chrome')
         import_from_chrome_btn.clicked.connect(self.importFromChrome)
         self.search_box = QLineEdit()
         self.search_box.setFixedHeight(30)
