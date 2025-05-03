@@ -249,7 +249,7 @@ fn write_bytes(file_name: &str, contents: &[u8]) -> PyResult<()> {
 
 // Define the module and wrap functions
 #[pymodule]
-fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+fn ibrowse(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(test, py)?)?;
     m.add_function(wrap_pyfunction!(config_dir, py)?)?;
     m.add_function(wrap_pyfunction!(cache_dir, py)?)?;
