@@ -268,5 +268,6 @@ fn ibrowse(py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(read_html, py)?)?;
     m.add_function(wrap_pyfunction!(write_html, py)?)?;
     m.add_function(wrap_pyfunction!(write_bytes, py)?)?;
+
     Ok(())
 }
