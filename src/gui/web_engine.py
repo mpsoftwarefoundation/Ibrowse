@@ -2,6 +2,28 @@ from src.imports import *
 from urllib.parse import urlparse
 
 
+class WebEngineProfile(QWebEngineProfile):
+    def __init__(self, profile: str, parent=None):
+        super().__init__(profile, parent)
+        self.setPersistentCookiesPolicy(QWebEngineProfile.PersistentCookiesPolicy.ForcePersistentCookies)
+        self.setCachePath(ibrowse.cache_dir())
+        self.setPersistentStoragePath(ibrowse.cache_dir())
+
+        self.downloadRequested.connect(self.download)
+
+    def download(self, request: QWebEngineDownloadRequest):
+        filename, _ = QFileDialog.getSaveFileName(
+            self.parent(),
+            'Save As',
+            request.downloadFileName()
+        )
+
+        if filename:
+            request.setDownloadDirectory(QFileInfo(filename).path())
+            request.setDownloadFileName(QFileInfo(filename).fileName())
+            request.accept()
+
+
 class WebEnginePage(QWebEnginePage):
     def __init__(self, profile, tab_view):
         super().__init__(profile, tab_view)

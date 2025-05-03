@@ -1,6 +1,7 @@
 from src.imports import *
 from src.gui.tab import Tab
 from src.gui.tab_view import TabView
+from src.gui.web_engine import WebEngineProfile
 from mp_software_stylesheets.styles import IBROWSECSS
 
 
@@ -19,10 +20,7 @@ class Ibrowse(QMainWindow):
             self._profile = profile
 
         else:
-            self._profile = QWebEngineProfile('PersistentProfile', self)
-            self._profile.setPersistentCookiesPolicy(QWebEngineProfile.PersistentCookiesPolicy.ForcePersistentCookies)
-            self._profile.setCachePath(ibrowse.cache_dir())
-            self._profile.setPersistentStoragePath(ibrowse.cache_dir())
+            self._profile = WebEngineProfile('PersistentProfile', self)
 
         self.createUI()
 
