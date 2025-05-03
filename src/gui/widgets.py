@@ -163,6 +163,7 @@ class EngineTypeCombo(QComboBox):
         self._engine_types = {
             'Google': 'google.com/search?q=',
             'DuckDuckGo': 'duckduckgo.com/?q=',
+            'YouTube': 'youtube.com/results?search_query=',
             'Bing': 'bing.com/search?q=',
             'Yahoo': 'search.yahoo.com/search?p=',
             'Startpage': 'startpage.com/sp/search?query=',

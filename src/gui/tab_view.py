@@ -68,8 +68,8 @@ class TabView(QTabWidget):
 
     def newTab(self):
         tab = Tab(self, self.parent().profile(), parent=self).fromHtml('resources/pages/new_tab.html')
-        self.addTab(tab, 'New Tab')
-        self.setCurrentIndex(self.count() - 1)
+        self.insertTab(self.currentIndex() + 1, tab, 'New Tab')
+        self.setCurrentIndex(self.indexOf(tab))
 
         QTimer.singleShot(300, self.startEditing)
 
