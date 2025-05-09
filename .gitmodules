@@ -1,4 +1,0 @@
-[submodule "mp_software_stylesheets"]
-	path = mp_software_stylesheets
-	url = https://github.com/ktechhydle/mp_software_stylesheets.git
-	branch = master
