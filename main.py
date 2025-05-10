@@ -1,8 +1,18 @@
-from src.imports import *
+from src.imports import (QApplication,
+                         QCoreApplication,
+                         QProcess,
+                         QMainWindow,
+                         QMessageBox,
+                         QIcon,
+                         QTimer,
+                         QUrl,
+                         sys,
+                         os,
+                         ibrowse,
+                         )
 from src.gui.tab import Tab
 from src.gui.tab_view import TabView
 from src.gui.web_engine import WebEngineProfile
-from mp_software_stylesheets.styles import IBROWSECSS
 
 
 if getattr(sys, 'frozen', False):
@@ -13,7 +23,7 @@ class Ibrowse(QMainWindow):
     def __init__(self, profile=None):
         super().__init__()
         self.setWindowTitle('Ibrowse')
-        self.setWindowIcon(QIcon('resources/icons/ibrowse_icon.svg'))
+        self.setWindowIcon(QIcon('resources/icons/logos/ibrowse_icon.svg'))
         self.resize(1000, 800)
 
         if profile:
@@ -101,13 +111,13 @@ class Ibrowse(QMainWindow):
         status = QProcess.startDetached(sys.executable, sys.argv)
         print(status)
 
-    def profile(self) -> QWebEngineProfile:
+    def profile(self) -> WebEngineProfile:
         return self._profile
 
 
 def main():
     app = QApplication(sys.argv)
-    app.setStyleSheet(IBROWSECSS)
+    app.setStyleSheet(ibrowse.read_html('resources/stylesheets/ibrowse_dark.css'))
 
     window = Ibrowse()
     window.show()
