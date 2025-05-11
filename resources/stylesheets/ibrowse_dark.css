@@ -2,7 +2,7 @@ QWidget
 {
     background-color: #3d3d3d;
     padding: 0px;
-    font-family: "Segoe UI";
+    font-family: 'Segoe UI';
     color: white;
 }
 
@@ -10,36 +10,6 @@ QMainWindow
 {
     background-color: #202020;
     color: white;
-}
-
-QGraphicsView
-{
-    border: none;
-}
-
-QMenuBar
-{
-    background-color: #181818;
-    color: #c0c0c0;
-    padding: 2px;
-}
-
-QMenuBar::item
-{
-    padding: 5px 12px 5px 12px;
-    color: #c7c7c7;
-}
-
-QMenuBar::item:selected
-{
-    background-color: #303030;
-    border-radius: 5px;
-    color: white;
-}
-
-QMenuBar::item:pressed
-{
-    background-color: #4772b3;
 }
 
 QMenu
@@ -109,36 +79,6 @@ QMenu:separator
     height: 1px;
 }
 
-QToolBar
-{
-    background-color: #343434;
-    border: 1px solid transparent;
-    border-radius: 0px;
-    border-top-right-radius: 20px;
-    padding: 3px;
-}
-
-QToolButton::menu-indicator {
-    image: url('mp_software_stylesheets/assets/chevron_down.svg');
-}
-
-QToolBar::handle:vertical
-{
-    image: url('mp_software_stylesheets/assets/toolbar-handle.svg');
-}
-
-QToolBar::handle:horizontal
-{
-    image: url('mp_software_stylesheets/assets/toolbar-handle-vertical.svg');
-}
-
-QToolBar::separator
-{
-    background-color: #4b4b4b; /* Background color of the separator */
-    width: 2px; /* Width of the separator */
-    height: 15px; /* Height of the separator */
-}
-
 QToolButton
 {
     background-color: #343434;
@@ -157,17 +97,16 @@ QToolButton:hover
 QToolButton:checked
 {
     background-color: #4772b3;
-    border-radius: 5px; /* Button background color when checked */
+    border-radius: 5px;
 }
 
 QLabel
 {
     color: #c2c2c2;
     background-color: transparent;
-    font-family: "Segoe UI";
+    font-family: 'Segoe UI';
 }
 
-/* Line edits, spin boxes, combo boxes */
 QLineEdit,
 QSpinBox,
 QDoubleSpinBox
@@ -284,29 +223,11 @@ QComboBox QAbstractItemView
     selection-background-color: #4772b3;
 }
 
-
-QProgressBar
-{
-    background-color: #3d3d3d;
-    border: 2px solid #747474;
-    border-radius: 6px;
-    height: 20px;
-    text-align: center;
-    color: #ffffff;
-}
-
-QProgressBar::chunk
-{
-    background-color: #4772b3;
-    border-radius: 4px;
-}
-
-/* Checkbox */
 QCheckBox
 {
-    spacing: 5px; /* Spacing between the checkbox and text */
+    spacing: 5px;
     background-color: transparent;
-    color: #c7c7c7; /* Text color */
+    color: #c2c2c2;
 }
 
 QCheckBox::indicator
@@ -351,7 +272,6 @@ QCheckBox::indicator:indeterminate:hover
     background: white;
 }
 
-/* Buttons for dialogs */
 QPushButton
 {
     border: none;
@@ -413,87 +333,6 @@ QDialogButtonBox QPushButton:default
 QDialogButtonBox QPushButton:default:hover
 {
     background-color: #628bca;
-}
-
-QGroupBox::title
-{
-    subcontrol-origin: margin;
-    left: 2px;
-    bottom: 5px;
-    padding: 1px;
-    background-color: transparent;
-    color: #c2c2c2;
-}
-
-QGroupBox
-{
-    border: 1px solid #707070;
-    border-radius: 5px;
-    margin-top: 15px;
-}
-
-/* Sliders and scrollbars */
-QSlider
-{
-    border: None;
-    background: transparent;
-}
-
-QSlider:horizontal
-{
-    height: 18px;
-}
-
-QSlider:vertical
-{
-    width: 18px;
-}
-
-QSlider::groove
-{
-    border: none;
-    background: #747474;
-}
-
-QSlider::groove:horizontal
-{
-    height: 4px;
-}
-
-QSlider::groove:vertical
-{
-    width: 16px;
-}
-
-QSlider::handle
-{
-    background: #c7c7c7;
-}
-
-QSlider::handle:hover
-{
-    background: #ffffff;
-}
-
-QSlider::handle:horizontal
-{
-    height: 16px;
-    width: 16px;
-    margin: -6px 0;
-    border-radius: 8px;
-}
-
-QSlider::handle:vertical
-{
-    height: 16px;
-    width: 16px;
-    margin: -6px 0;
-    border-radius: 8px;
-}
-
-QFrame::handle
-{
-    border-left: 2px solid #505050;
 }
 
 QScrollBar
@@ -594,7 +433,7 @@ QTabBar::tab:selected
 }
 
 QTabBar::close-button {
-    image: url("resources/icons/ui/close_button.svg");
+    image: url('resources/icons/ui/close_button.svg');
     subcontrol-origin: padding;
     subcontrol-position: right;
     border-radius: 2px;
@@ -605,29 +444,6 @@ QTabBar::close-button {
 
 QTabBar::close-button:hover {
     background-color: #c94e4e;
-}
-
-QTableWidget
-{
-    background-color: #ffffff;
-    color: #000000;
-}
-
-QHeaderView::section
-{
-    background-color: #f0f0f0;
-    color: #000000;
-    font-weight: bold;
-    border: 1px solid #d3d3d3;
-}
-
-
-/* Dockwidget, listwidget, toolbox */
-QDockWidget
-{
-    background: #303030;
-    border-radius: 5px;
-    color: white;
 }
 
 QListWidget
@@ -660,44 +476,12 @@ QListWidget::item:selected:hover
     background: #628bca;
 }
 
-QToolBox
-{
-    background-color: #303030;
-    padding: 10px 10px 10px 10px;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-QToolBox::tab
-{
-    background-color: #3d3d3d;
-    border: 1px solid #3d3d3d;
-    border-radius: 5px;
-    font-weight: bold;
-    color: #c2c2c2;
-    image: url('mp_software_stylesheets/assets/triangle-right.svg');
-    image-position: left;
-}
-
-QToolBox::tab:hover
-{
-    background-color: #606060;
-    color: white;
-}
-
-QToolBox::tab:selected
-{
-    image: url('mp_software_stylesheets/assets/triangle-down.svg');
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
-}
-
 QToolTip
 {
     background-color: #303030;
     color: white;
     border: 1px solid #606060;
-    font-family: "Segoe UI";
+    font-family: 'Segoe UI';
     padding: 1px;
 }
 
@@ -712,7 +496,7 @@ QToolTip
 #searchBarButton
 {
     background-color: transparent;
-    font-family: "Segoe UI";
+    font-family: 'Segoe UI';
     font-size: 25px;
     width: 20px;
     height: 20px;
