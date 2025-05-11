@@ -1,4 +1,11 @@
-from src.imports import *
+import ibrowse
+import requests
+from PyQt6.QtCore import QFileInfo, Qt, QPoint
+from PyQt6.QtGui import QAction, QImage
+from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWidgets import QFileDialog, QApplication
+from PyQt6.QtWebEngineCore import (QWebEngineProfile, QWebEngineDownloadRequest, QWebEnginePage,
+    QWebEngineContextMenuRequest)
 from urllib.parse import urlparse
 
 

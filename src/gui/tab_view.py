@@ -1,4 +1,6 @@
-from src.imports import *
+from PyQt6.QtCore import Qt, QTimer, QUrl
+from PyQt6.QtGui import QKeySequence
+from PyQt6.QtWidgets import QTabWidget, QToolButton
 from src.gui.tab import Tab
 
 

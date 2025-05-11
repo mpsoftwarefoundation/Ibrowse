@@ -1,15 +1,9 @@
-from src.imports import (QApplication,
-                         QCoreApplication,
-                         QProcess,
-                         QMainWindow,
-                         QMessageBox,
-                         QIcon,
-                         QTimer,
-                         QUrl,
-                         sys,
-                         os,
-                         ibrowse,
-                         )
+import os
+import sys
+import ibrowse
+from PyQt6.QtCore import QUrl, QTimer, QCoreApplication, QProcess
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox
 from src.gui.tab import Tab
 from src.gui.tab_view import TabView
 from src.gui.web_engine import WebEngineProfile

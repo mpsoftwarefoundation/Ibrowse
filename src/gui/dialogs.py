@@ -1,4 +1,8 @@
-from src.imports import *
+import csv
+import ibrowse
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QWidget, QHBoxLayout, QPushButton, QLineEdit, QListWidget,
+    QListWidgetItem, QApplication, QFileDialog, QDialogButtonBox)
 from src.gui.widgets import StringInput
 
 

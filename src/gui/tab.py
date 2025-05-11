@@ -1,4 +1,13 @@
-from src.imports import *
+import os
+import subprocess
+import sys
+import ibrowse
+from PyQt6.QtCore import QUrl
+from PyQt6.QtGui import QKeySequence, QAction
+from PyQt6.QtWebEngineCore import QWebEngineProfile, QWebEngineSettings, QWebEnginePage
+from PyQt6.QtWebEngineWidgets import QWebEngineView
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QApplication, QWidgetAction, QLabel, QMenu,
+    QMessageBox)
 from src.gui.dialogs import PasswordsDialog, CreateBookmarkDialog
 from src.gui.web_engine import WebEnginePage, WebEngineView
 from src.gui.widgets import SearchBar, QuickSearchBar, EngineTypeCombo, ContextMenu

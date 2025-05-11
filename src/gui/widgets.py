@@ -1,4 +1,7 @@
-from src.imports import *
+import ibrowse
+from PyQt6.QtCore import QEvent, QTimer, QUrl, Qt, QRect, QPropertyAnimation, QEasingCurve, QPoint
+from PyQt6.QtWidgets import (QLineEdit, QCompleter, QMenu, QVBoxLayout, QWidget, QWidgetAction, QComboBox, QApplication,
+    QHBoxLayout, QLabel)
 
 
 COMMANDS = ['/exit',
