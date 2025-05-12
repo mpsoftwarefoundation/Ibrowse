@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 20 20"
+   xml:space="preserve"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="checkbox_dehlt.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs1" /><sodipodi:namedview
+   id="namedview1"
+   pagecolor="#505050"
+   bordercolor="#eeeeee"
+   borderopacity="1"
+   inkscape:showpageshadow="0"
+   inkscape:pageopacity="0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#505050"
+   inkscape:zoom="38.6"
+   inkscape:cx="10"
+   inkscape:cy="10"
+   inkscape:window-width="1920"
+   inkscape:window-height="991"
+   inkscape:window-x="-9"
+   inkscape:window-y="-9"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="svg1" />
+    <path
+   fill="#ffffff"
+   d="M 5.146715,3.8860104 A 1.2717098,1.2717098 0 0 0 3.8860104,5.146715 v 9.70657 A 1.2717098,1.2717098 0 0 0 5.146715,16.11399 h 9.70657 A 1.2717098,1.2717098 0 0 0 16.11399,14.853285 V 5.1454922 A 1.2717098,1.2717098 0 0 0 14.853285,3.8860104 Z m 0,1.2227979 h 9.70657 c 0.03179,0 0.03791,0.00611 0.03791,0.037907 v 9.7065697 c 0,0.03179 -0.0061,0.03668 -0.03791,0.03668 H 5.1454922 c -0.031793,0 -0.036684,-0.0049 -0.036684,-0.03668 V 5.1454922 c -0.00122,-0.03057 0.00489,-0.036684 0.036684,-0.036684 z"
+   id="path1"
+   style="stroke-width:1.2228" />
+</svg>

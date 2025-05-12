@@ -66,11 +66,11 @@ QMenu::icon {
 
 QMenu::indicator {
     padding-left: 5px;
-    image: url('mp_software_stylesheets/assets/checkbox_dehlt.svg');
+    image: url('resources/icons/ui/checkbox_unchecked_icon.svg');
 }
 
 QMenu::indicator:checked {
-    image: url('mp_software_stylesheets/assets/checkbox_hlt.svg');
+    image: url('resources/icons/ui/checkbox_checked_icon.svg');
 }
 
 QMenu:separator {
@@ -193,10 +193,10 @@ QComboBox:hover {
 
 QComboBox::down-arrow {
     right: 3.3;
-    image: url('resources/icons/ui/down_arrow.png');
     width: 25px;
     height: 27px;
     margin: 6px;
+    image: url('resources/icons/ui/down_arrow_icon.svg');
 }
 
 QComboBox QAbstractItemView {
@@ -359,9 +359,9 @@ QTabWidget::pane {
 }
 
 QTabBar {
-    background-color: transparent;
+    background-color: #202020;
     border: none;
-    border-radius: 5px;
+    border-radius: 0px;
     qproperty-drawBase: 0;
 }
 
@@ -395,6 +395,10 @@ QTabBar::close-button {
 
 QTabBar::close-button:hover {
     background-color: #c94e4e;
+}
+
+QTabBar::scroller {
+    width: 0px;
 }
 
 QListWidget {

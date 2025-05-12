@@ -14,18 +14,7 @@ class TabView(QTabWidget):
         self.tabBarDoubleClicked.connect(self.newTab)
         self.tabCloseRequested.connect(self.closeTab)
 
-        self.createUI()
         self.createActions()
-
-    def createUI(self):
-        add_tab_btn = QToolButton(self)
-        add_tab_btn.setObjectName('searchBarButton')
-        add_tab_btn.setText('+')
-        add_tab_btn.setAutoRaise(True)
-        add_tab_btn.setToolTip('Create a new tab')
-        add_tab_btn.clicked.connect(self.newTab)
-
-        self.setCornerWidget(add_tab_btn, Qt.Corner.TopRightCorner)
 
     def createActions(self):
         new_tab_action = self.addAction('New Tab')
