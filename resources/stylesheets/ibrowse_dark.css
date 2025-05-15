@@ -136,32 +136,6 @@ QTextEdit {
     border-radius: 5px;
 }
 
-QAbstractSpinBox::up-button {
-    image: url('mp_software_stylesheets/assets/up_arrow.png');
-    background: #545454;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-}
-
-QAbstractSpinBox::down-button {
-    image: url('mp_software_stylesheets/assets/down_arrow.png');
-    background: #545454;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-}
-
-QAbstractSpinBox::up-button:hover {
-    background: #656565;
-}
-
-QAbstractSpinBox::down-button:hover {
-    background: #656565;
-}
-
-QAbstractSpinBox QLineEdit {
-    text-align: center;
-}
-
 QComboBox {
     color: #dfdfdf;
     background-color: #303030;
@@ -224,27 +198,6 @@ QCheckBox::indicator:hover {
     height: 15px;
     border: 1px solid #656565;
     background: #656565;
-}
-
-QCheckBox::indicator:checked {
-    image: url('mp_software_stylesheets/assets/check.svg');
-    background: #4772b3;
-    border-color: #4772b3;
-}
-
-QCheckBox::indicator:checked:hover {
-    image: url('mp_software_stylesheets/assets/check.svg');
-    background: #4772b3;
-}
-
-QCheckBox::indicator:indeterminate {
-    image: url('mp_software_stylesheets/assets/check.svg');
-    background: #c2c2c2;
-}
-
-QCheckBox::indicator:indeterminate:hover {
-    image: url('mp_software_stylesheets/assets/check.svg');
-    background: white;
 }
 
 QPushButton {
