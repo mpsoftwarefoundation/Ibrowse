@@ -166,10 +166,8 @@ QComboBox:hover {
 }
 
 QComboBox::down-arrow {
-    right: 3.3;
-    width: 25px;
-    height: 27px;
-    margin: 6px;
+    bottom: 3px;
+    right: 3px;
     image: url('resources/icons/ui/down_arrow_icon.svg');
 }
 

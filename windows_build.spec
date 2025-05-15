@@ -6,7 +6,6 @@ a = Analysis(
     binaries=[],
     datas=[
     ('resources', 'resources'),
-    ('mp_software_stylesheets', 'mp_software_stylesheets'),
     ],
     hookspath=[],
     hooksconfig={},
