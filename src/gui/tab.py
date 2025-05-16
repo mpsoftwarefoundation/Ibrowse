@@ -3,7 +3,7 @@ import subprocess
 import sys
 import ibrowse
 from PyQt6.QtCore import QUrl
-from PyQt6.QtGui import QKeySequence, QAction
+from PyQt6.QtGui import QKeySequence, QAction, QIcon
 from PyQt6.QtWebEngineCore import QWebEngineProfile, QWebEngineSettings, QWebEnginePage
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QApplication, QWidgetAction, QLabel, QMenu,
@@ -35,23 +35,23 @@ class Tab(QWidget):
 
     def createUI(self):
         nav_bar = QWidget()
-        nav_bar.setFixedHeight(38)
+        nav_bar.setFixedHeight(30)
         nav_bar.setLayout(QHBoxLayout())
-        nav_bar.layout().setContentsMargins(5, 5, 5, 5)
+        nav_bar.layout().setContentsMargins(5, 5, 5, 0)
 
-        back_btn = QPushButton('◀')
+        back_btn = QPushButton(QIcon('resources/icons/ui/back_icon.svg'), '', self)
         back_btn.setObjectName('searchBarButton')
         back_btn.setShortcut(QKeySequence('Ctrl+left'))
         back_btn.setToolTip('Navigate backwards')
-        forward_btn = QPushButton('▶')
+        forward_btn = QPushButton(QIcon('resources/icons/ui/forward_icon.svg'), '', self)
         forward_btn.setObjectName('searchBarButton')
         forward_btn.setShortcut(QKeySequence('Ctrl+right'))
         forward_btn.setToolTip('Navigate forwards')
-        reload_btn = QPushButton('↻')
+        reload_btn = QPushButton(QIcon('resources/icons/ui/reload_icon.svg'), '', self)
         reload_btn.setObjectName('searchBarButton')
         reload_btn.setShortcut(QKeySequence('Ctrl+R'))
         reload_btn.setToolTip('Reload the current page')
-        menu_btn = QPushButton('···')
+        menu_btn = QPushButton(QIcon('resources/icons/ui/menu_access_icon.svg'), '', self)
         menu_btn.setObjectName('searchBarButton')
         menu_btn.setToolTip('Ibrowse menu')
         menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
