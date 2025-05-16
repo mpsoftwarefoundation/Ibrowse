@@ -114,6 +114,12 @@ class Tab(QWidget):
                 self.tab_view.addTab(self.fromHtml('resources/pages/startup.html'), 'Help')
                 self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
 
+            elif query == '/newtab':
+                self.tab_view.newTab()
+
+            elif query == '/newwindow':
+                self.tab_view.parent().newWindow()
+
             elif query == '/close':
                 self.close()
 
