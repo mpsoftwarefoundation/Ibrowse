@@ -1,6 +1,7 @@
 import csv
 import ibrowse
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QWidget, QHBoxLayout, QPushButton, QLineEdit, QListWidget,
     QListWidgetItem, QApplication, QFileDialog, QDialogButtonBox)
 from src.gui.widgets import StringInput
@@ -28,12 +29,12 @@ class PasswordsDialog(QDialog):
         container.setLayout(QHBoxLayout())
         container.layout().setContentsMargins(0, 0, 0, 0)
 
-        add_password_btn = QPushButton('➕')
+        add_password_btn = QPushButton(QIcon('resources/icons/ui/plus_icon.svg'), '', self)
         add_password_btn.setObjectName('searchBarButton')
         add_password_btn.setToolTip('Add a saved password')
         add_password_btn.setFixedSize(30, 30)
         add_password_btn.clicked.connect(self.addPassword)
-        import_from_chrome_btn = QPushButton('📁')
+        import_from_chrome_btn = QPushButton(QIcon('resources/icons/ui/folder_icon.svg'), '', self)
         import_from_chrome_btn.setObjectName('searchBarButton')
         import_from_chrome_btn.setToolTip('Import passwords from Chrome')
         import_from_chrome_btn.setFixedSize(30, 30)
@@ -85,7 +86,7 @@ class PasswordsDialog(QDialog):
             copy_password_btn.setFixedWidth(20)
             copy_password_btn.setToolTip('Copy password')
             copy_password_btn.clicked.connect(lambda _, i=item: QApplication.clipboard().setText(i.password))
-            delete_btn = QPushButton('✕')
+            delete_btn = QPushButton(QIcon('resources/icons/ui/close_icon.svg'), '', self)
             delete_btn.setFixedWidth(20)
             delete_btn.setToolTip('Delete password')
             delete_btn.clicked.connect(lambda _, i=item: self.deletePassword(i))

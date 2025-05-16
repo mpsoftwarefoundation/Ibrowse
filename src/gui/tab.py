@@ -210,7 +210,7 @@ class Tab(QWidget):
             container = QWidget()
             container.setLayout(QHBoxLayout())
             label = QLabel(name)
-            remove_btn = QPushButton('✕')
+            remove_btn = QPushButton(QIcon('resources/icons/ui/close_icon.svg'), '', self)
             remove_btn.setFixedWidth(20)
             remove_btn.setToolTip('Remove this bookmark')
             remove_btn.clicked.connect(lambda _, u=action.url: self.removeBookmark(u, self.bookmarks_menu, action))
