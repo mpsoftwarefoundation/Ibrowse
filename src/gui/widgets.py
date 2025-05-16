@@ -20,25 +20,12 @@ class SearchBar(QLineEdit):
         self.setPlaceholderText('Search...')
         self.installEventFilter(self)
 
-        self._mouse_pressed = False
-        self._first_focus = True
-
         self.updateCompleter()
-
-    def eventFilter(self, obj, event):
-        if event.type() == QEvent.Type.MouseButtonPress:
-            self._mouse_pressed = True
-        return super().eventFilter(obj, event)
 
     def focusInEvent(self, event):
         super().focusInEvent(event)
 
-        if self._first_focus:
-            self._first_focus = False
-            QTimer.singleShot(0, self.selectAll)
-        elif self._mouse_pressed:
-            self._mouse_pressed = False
-            QTimer.singleShot(0, self.selectAll)
+        QTimer.singleShot(0, self.startEditing)
 
     def startEditing(self):
         self.setFocus()
