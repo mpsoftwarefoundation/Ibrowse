@@ -1,6 +1,6 @@
-from PyQt6.QtCore import Qt, QTimer, QUrl
+from PyQt6.QtCore import QTimer, QUrl
 from PyQt6.QtGui import QKeySequence
-from PyQt6.QtWidgets import QTabWidget, QToolButton
+from PyQt6.QtWidgets import QTabWidget
 from src.gui.tab import Tab
 
 
@@ -27,7 +27,7 @@ class TabView(QTabWidget):
 
         close_tab_action = self.addAction('Close Tab')
         close_tab_action.setShortcut(QKeySequence('Ctrl+E'))
-        close_tab_action.triggered.connect(lambda: self.currentWidget().close())
+        close_tab_action.triggered.connect(lambda: self.closeTab(self.currentIndex()))
 
         password_manager_action = self.addAction('Password Manager')
         password_manager_action.setShortcut(QKeySequence('Ctrl+K'))
@@ -77,12 +77,10 @@ class TabView(QTabWidget):
         self.setCurrentIndex(self.count() - 1)
 
     def closeTab(self, index: int):
-        if self.count() == 1:
-            self.removeTab(index)
-            self.parent().close()
-
         self.removeTab(index)
-        self.update()
+
+        if self.count() == 0:
+            self.parent().close()
 
     def currentTab(self) -> Tab:
         return self.widget(self.currentIndex())

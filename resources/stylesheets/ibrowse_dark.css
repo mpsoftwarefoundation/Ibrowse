@@ -317,6 +317,7 @@ QTabBar {
     background-color: #202020;
     border: none;
     border-radius: 0px;
+    alignment: center;
     qproperty-drawBase: 0;
 }
 
