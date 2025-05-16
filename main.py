@@ -25,6 +25,7 @@ class Ibrowse(QMainWindow):
 
         else:
             self._profile = WebEngineProfile('PersistentProfile', self)
+            self._profile.setCachePath(ibrowse.cache_dir())
 
         self.createUI()
 
