@@ -5,7 +5,7 @@ from PyQt6.QtGui import QAction, QImage
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QFileDialog, QApplication
 from PyQt6.QtWebEngineCore import (QWebEngineProfile, QWebEngineDownloadRequest, QWebEnginePage,
-    QWebEngineContextMenuRequest)
+                                   QWebEngineContextMenuRequest, QWebEngineFullScreenRequest)
 from urllib.parse import urlparse
 
 
@@ -35,6 +35,21 @@ class WebEnginePage(QWebEnginePage):
     def __init__(self, profile, tab_view):
         super().__init__(profile, tab_view)
         self.tab_view = tab_view
+
+        self.fullScreenRequested.connect(self.showFullScreenMode)
+
+    def showFullScreenMode(self, request: QWebEngineFullScreenRequest):
+        request.accept()
+        tab = self.tab_view.currentTab()
+
+        if request.toggleOn():
+            tab.browser().setParent(None)
+            tab.browser().showFullScreen()
+
+        else:
+            tab.browser().setParent(tab)
+            tab.browser().showNormal()
+            tab.layout().addWidget(tab.browser())
 
 
 class WebEngineView(QWebEngineView):

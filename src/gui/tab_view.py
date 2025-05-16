@@ -83,3 +83,6 @@ class TabView(QTabWidget):
 
         self.removeTab(index)
         self.update()
+
+    def currentTab(self) -> Tab:
+        return self.widget(self.currentIndex())

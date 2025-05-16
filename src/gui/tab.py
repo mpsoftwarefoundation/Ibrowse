@@ -70,7 +70,7 @@ class Tab(QWidget):
         nav_bar.layout().addWidget(self._search_bar)
         nav_bar.layout().addWidget(menu_btn)
 
-        self._page = WebEnginePage(self.profile, self)
+        self._page = WebEnginePage(self.profile, self.tab_view)
         self._browser = WebEngineView(self._page, self.tab_view, self)
         back_btn.clicked.connect(self._browser.back)
         forward_btn.clicked.connect(self._browser.forward)
@@ -91,6 +91,7 @@ class Tab(QWidget):
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.WebGLEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PdfViewerEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ScreenCaptureEnabled, True)
+        self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.FullScreenSupportEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalStorageEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ScrollAnimatorEnabled, ibrowse.smooth_scrolling_enabled())
