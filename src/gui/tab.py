@@ -41,11 +41,9 @@ class Tab(QWidget):
 
         back_btn = QPushButton(QIcon('resources/icons/ui/back_icon.svg'), '', self)
         back_btn.setObjectName('searchBarButton')
-        back_btn.setShortcut(QKeySequence('Ctrl+left'))
         back_btn.setToolTip('Navigate backwards')
         forward_btn = QPushButton(QIcon('resources/icons/ui/forward_icon.svg'), '', self)
         forward_btn.setObjectName('searchBarButton')
-        forward_btn.setShortcut(QKeySequence('Ctrl+right'))
         forward_btn.setToolTip('Navigate forwards')
         reload_btn = QPushButton(QIcon('resources/icons/ui/reload_icon.svg'), '', self)
         reload_btn.setObjectName('searchBarButton')
