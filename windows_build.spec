@@ -23,8 +23,8 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='Ibrowse',
-    icon='resources/icons/ibrowse_icon.ico',
+    name='ibrowse',
+    icon='resources/icons/logos/ibrowse_icon.ico',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -44,5 +44,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='glang',
+    name='ibrowse',
 )
