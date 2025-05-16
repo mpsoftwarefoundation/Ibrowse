@@ -102,7 +102,7 @@ class Ibrowse(QMainWindow):
 
     def restart(self):
         QCoreApplication.quit()
-        status = QProcess.startDetached(sys.executable, sys.argv)
+        status = QProcess.startDetached(sys.executable, [])
         print(status)
 
     def profile(self) -> WebEngineProfile:

@@ -250,24 +250,24 @@ fn write_bytes(file_name: &str, contents: &[u8]) -> PyResult<()> {
 // Define the module and wrap functions
 #[pymodule]
 fn ibrowse(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(test, py)?)?;
-    m.add_function(wrap_pyfunction!(config_dir, py)?)?;
-    m.add_function(wrap_pyfunction!(cache_dir, py)?)?;
-    m.add_function(wrap_pyfunction!(passwords, py)?)?;
-    m.add_function(wrap_pyfunction!(bookmarks, py)?)?;
-    m.add_function(wrap_pyfunction!(previous_tabs, py)?)?;
-    m.add_function(wrap_pyfunction!(preferred_browser, py)?)?;
-    m.add_function(wrap_pyfunction!(smooth_scrolling_enabled, py)?)?;
-    m.add_function(wrap_pyfunction!(add_password, py)?)?;
-    m.add_function(wrap_pyfunction!(remove_password, py)?)?;
-    m.add_function(wrap_pyfunction!(add_bookmark, py)?)?;
-    m.add_function(wrap_pyfunction!(remove_bookmark, py)?)?;
-    m.add_function(wrap_pyfunction!(set_previous_tabs, py)?)?;
-    m.add_function(wrap_pyfunction!(set_preferred_browser, py)?)?;
-    m.add_function(wrap_pyfunction!(set_smooth_scrolling, py)?)?;
-    m.add_function(wrap_pyfunction!(read_html, py)?)?;
-    m.add_function(wrap_pyfunction!(write_html, py)?)?;
-    m.add_function(wrap_pyfunction!(write_bytes, py)?)?;
+    m.add_function(wrap_pyfunction!(test, m)?)?;
+    m.add_function(wrap_pyfunction!(config_dir, m)?)?;
+    m.add_function(wrap_pyfunction!(cache_dir, m)?)?;
+    m.add_function(wrap_pyfunction!(passwords, m)?)?;
+    m.add_function(wrap_pyfunction!(bookmarks, m)?)?;
+    m.add_function(wrap_pyfunction!(previous_tabs, m)?)?;
+    m.add_function(wrap_pyfunction!(preferred_browser, m)?)?;
+    m.add_function(wrap_pyfunction!(smooth_scrolling_enabled, m)?)?;
+    m.add_function(wrap_pyfunction!(add_password, m)?)?;
+    m.add_function(wrap_pyfunction!(remove_password, m)?)?;
+    m.add_function(wrap_pyfunction!(add_bookmark, m)?)?;
+    m.add_function(wrap_pyfunction!(remove_bookmark, m)?)?;
+    m.add_function(wrap_pyfunction!(set_previous_tabs, m)?)?;
+    m.add_function(wrap_pyfunction!(set_preferred_browser, m)?)?;
+    m.add_function(wrap_pyfunction!(set_smooth_scrolling, m)?)?;
+    m.add_function(wrap_pyfunction!(read_html, m)?)?;
+    m.add_function(wrap_pyfunction!(write_html, m)?)?;
+    m.add_function(wrap_pyfunction!(write_bytes, m)?)?;
 
     Ok(())
 }
