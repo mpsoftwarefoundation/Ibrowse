@@ -1,67 +1,7 @@
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::fs;
-use std::io::{Read, Write};
-use std::path::PathBuf;
-
-
-/*************** Configure JSON structure ***************/
-#[derive(Serialize, Deserialize, Debug)]
-struct BrowserConfig {
-    passwords: HashMap<String, [String; 2]>,
-    bookmarks: HashMap<String, String>,
-    previous_tabs: Vec<String>,
-    preferred_browser: String,
-    smooth_scrolling: bool,
-}
-
-impl Default for BrowserConfig {
-    fn default() -> Self {
-        BrowserConfig {
-            passwords: HashMap::new(),
-            bookmarks: HashMap::new(),
-            previous_tabs: vec![],
-            preferred_browser: String::new(),
-            smooth_scrolling: false,
-        }
-    }
-}
-
-/************** Manage paths and load JSON **************/
-fn get_config_path() -> PathBuf {
-    let config_dir = dirs::config_dir()
-        .unwrap_or_else(|| std::env::temp_dir())
-        .join("ibrowse");
-
-    fs::create_dir_all(&config_dir).expect("Failed to create config dir");
-
-    config_dir.join("config.json")
-}
-
-fn load_config() -> BrowserConfig {
-    let path = get_config_path();
-    if !path.exists() {
-        save_config(&BrowserConfig::default());
-    }
-
-    let mut file = fs::File::open(&path).expect("Failed to open config");
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).unwrap();
-
-    serde_json::from_str(&contents).unwrap_or_else(|_| BrowserConfig::default())
-}
-
-fn save_config(config: &BrowserConfig) {
-    let path = get_config_path();
-    let json = serde_json::to_string_pretty(config).unwrap();
-    let mut file = fs::File::create(&path).unwrap();
-
-    file.write_all(json.as_bytes()).unwrap();
-}
-
-/*************** Bind functions to Python ***************/
+mod system;
+mod user;
 
 // Test function to test if the bindings are correct
 #[pyfunction]
@@ -71,203 +11,27 @@ fn test() -> PyResult<()> {
     Ok(())
 }
 
-// Retrieve the config dir of Ibrowse (.../ibrowse)
-#[pyfunction]
-fn config_dir() -> PyResult<String> {
-    let config_dir = dirs::config_dir()
-        .unwrap_or_else(|| std::env::temp_dir())
-        .join("ibrowse");
-
-    Ok(config_dir.to_string_lossy().into_owned())
-}
-
-// Retrieve the cache dir of Ibrowse (.../ibrowse/cache)
-#[pyfunction]
-fn cache_dir() -> PyResult<String> {
-    let config_dir = dirs::cache_dir()
-        .unwrap_or_else(|| std::env::temp_dir())
-        .join("ibrowse")
-        .join("cache");
-
-    Ok(config_dir.to_string_lossy().into_owned())
-}
-
-// Get passwords (as a Python dict '{url, [username, password]}')
-#[pyfunction]
-fn passwords() -> PyResult<HashMap<String, [String; 2]>> {
-    let config = load_config();
-
-    Ok(config.passwords)
-}
-
-// Get bookmarks (as a Python dict '{url, name}')
-#[pyfunction]
-fn bookmarks() -> PyResult<HashMap<String, String>> {
-    let config = load_config();
-
-    Ok(config.bookmarks)
-}
-
-// Get previous tabs (as a Python list '[url]')
-#[pyfunction]
-fn previous_tabs() -> PyResult<Vec<String>> {
-    let config = load_config();
-
-    Ok(config.previous_tabs)
-}
-
-// Get preferred browser (as a Python string '[browser_name]')
-#[pyfunction]
-fn preferred_browser() -> PyResult<String> {
-    let config = load_config();
-
-    Ok(config.preferred_browser)
-}
-
-// Get smooth scrolling enabled
-#[pyfunction]
-fn smooth_scrolling_enabled() -> PyResult<bool> {
-    let config = load_config();
-
-    Ok(config.smooth_scrolling)
-}
-
-// Append a password object with url, username, and password to config.json
-#[pyfunction]
-fn add_password(url: &str, username: &str, password: &str) -> PyResult<()> {
-    let mut config = load_config();
-    let array = [username.to_string(), password.to_string()];
-    config.passwords.insert(url.to_string(), array);
-
-    save_config(&config);
-    Ok(())
-}
-
-// Remove a password object with specified url from config.json
-#[pyfunction]
-fn remove_password(url: &str) -> PyResult<()> {
-    let mut config = load_config();
-    config.passwords.remove(url);
-
-    save_config(&config);
-    Ok(())
-}
-
-// Append a bookmark object with url and bookmark name to config.json
-#[pyfunction]
-fn add_bookmark(url: &str, name: &str) -> PyResult<()> {
-    let mut config = load_config();
-    config.bookmarks.insert(url.to_string(), name.to_string());
-
-    save_config(&config);
-    Ok(())
-}
-
-// Remove a bookmark object with the specified bookmark name from config.json
-#[pyfunction]
-fn remove_bookmark(name: &str) -> PyResult<()> {
-    let mut config = load_config();
-    config.bookmarks.remove(name);
-
-    save_config(&config);
-    Ok(())
-}
-
-// Set the previous tabs array to a Python list ('[url]')
-#[pyfunction]
-fn set_previous_tabs(tabs: Vec<String>) -> PyResult<()> {
-    let mut config = load_config();
-    config.previous_tabs = tabs;
-
-    save_config(&config);
-    Ok(())
-}
-
-// Set the preferred browser to a Python string ('[browser_name]')
-#[pyfunction]
-fn set_preferred_browser(browser: String) -> PyResult<()> {
-    let mut config = load_config();
-    config.preferred_browser = browser;
-
-    save_config(&config);
-    Ok(())
-}
-
-// Set smooth scrolling enabled
-#[pyfunction]
-fn set_smooth_scrolling(enabled: bool) -> PyResult<()> {
-    let mut config = load_config();
-    config.smooth_scrolling = enabled;
-
-    save_config(&config);
-    Ok(())
-}
-
-// Open an HTML in UTF-8 encoding and return a Python string of the contents
-#[pyfunction]
-fn read_html(file_name: &str) -> PyResult<String> {
-    let mut file = fs::File::open(file_name).map_err(
-        |e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Failed to open file: {}", e)))?;
-    let mut contents = String::new();
-
-    file.read_to_string(&mut contents).map_err(
-        |e| PyErr::new::<pyo3::exceptions::PyIOError, _>(format!("Failed to read file: {}", e)))?;
-    Ok(contents)
-}
-
-// Write HTML contents to a file
-#[pyfunction]
-fn write_html(file_name: &str, contents: &str) -> PyResult<()> {
-    let mut file = fs::File::create(file_name)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(
-            format!("Failed to create file: {}", e)
-        ))?;
-
-    file.write_all(contents.as_bytes())
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(
-            format!("Failed to write to file: {}", e)
-        ))?;
-
-    Ok(())
-}
-
-// Write Python bytes to a file
-#[pyfunction]
-fn write_bytes(file_name: &str, contents: &[u8]) -> PyResult<()> {
-    let mut file = fs::File::create(file_name)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(
-            format!("Failed to create file: {}", e)
-        ))?;
-
-    file.write_all(contents)
-        .map_err(|e| PyErr::new::<pyo3::exceptions::PyIOError, _>(
-            format!("Failed to write to file: {}", e)
-        ))?;
-
-    Ok(())
-}
-
 // Define the module and wrap functions
 #[pymodule]
 fn ibrowse(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(test, m)?)?;
-    m.add_function(wrap_pyfunction!(config_dir, m)?)?;
-    m.add_function(wrap_pyfunction!(cache_dir, m)?)?;
-    m.add_function(wrap_pyfunction!(passwords, m)?)?;
-    m.add_function(wrap_pyfunction!(bookmarks, m)?)?;
-    m.add_function(wrap_pyfunction!(previous_tabs, m)?)?;
-    m.add_function(wrap_pyfunction!(preferred_browser, m)?)?;
-    m.add_function(wrap_pyfunction!(smooth_scrolling_enabled, m)?)?;
-    m.add_function(wrap_pyfunction!(add_password, m)?)?;
-    m.add_function(wrap_pyfunction!(remove_password, m)?)?;
-    m.add_function(wrap_pyfunction!(add_bookmark, m)?)?;
-    m.add_function(wrap_pyfunction!(remove_bookmark, m)?)?;
-    m.add_function(wrap_pyfunction!(set_previous_tabs, m)?)?;
-    m.add_function(wrap_pyfunction!(set_preferred_browser, m)?)?;
-    m.add_function(wrap_pyfunction!(set_smooth_scrolling, m)?)?;
-    m.add_function(wrap_pyfunction!(read_html, m)?)?;
-    m.add_function(wrap_pyfunction!(write_html, m)?)?;
-    m.add_function(wrap_pyfunction!(write_bytes, m)?)?;
+    m.add_function(wrap_pyfunction!(user::data::passwords, m)?)?;
+    m.add_function(wrap_pyfunction!(user::data::bookmarks, m)?)?;
+    m.add_function(wrap_pyfunction!(user::data::previous_tabs, m)?)?;
+    m.add_function(wrap_pyfunction!(user::data::preferred_browser, m)?)?;
+    m.add_function(wrap_pyfunction!(user::data::smooth_scrolling_enabled, m)?)?;
+    m.add_function(wrap_pyfunction!(user::passwords::add_password, m)?)?;
+    m.add_function(wrap_pyfunction!(user::passwords::remove_password, m)?)?;
+    m.add_function(wrap_pyfunction!(user::bookmarks::add_bookmark, m)?)?;
+    m.add_function(wrap_pyfunction!(user::bookmarks::remove_bookmark, m)?)?;
+    m.add_function(wrap_pyfunction!(user::settings::set_previous_tabs, m)?)?;
+    m.add_function(wrap_pyfunction!(user::settings::set_preferred_browser, m)?)?;
+    m.add_function(wrap_pyfunction!(user::settings::set_smooth_scrolling, m)?)?;
+    m.add_function(wrap_pyfunction!(system::dirs::config_dir, m)?)?;
+    m.add_function(wrap_pyfunction!(system::dirs::cache_dir, m)?)?;
+    m.add_function(wrap_pyfunction!(system::file_ops::read_html, m)?)?;
+    m.add_function(wrap_pyfunction!(system::file_ops::write_html, m)?)?;
+    m.add_function(wrap_pyfunction!(system::file_ops::write_bytes, m)?)?;
 
     Ok(())
 }
