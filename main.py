@@ -77,14 +77,11 @@ class Ibrowse(QMainWindow):
             try:
                 tab = Tab(self.tab_view, self._profile, parent=self).fromHtml(arg)
 
-            except OSError:
-                tab = Tab(self.tab_view, self._profile, url=arg, parent=self)
-
-                self.tab_view.addTab(tab, '')
+                self.tab_view.addTab(tab, 'File')
                 self.tab_view.setCurrentWidget(tab)
 
-            self.tab_view.addTab(tab, 'File')
-            self.tab_view.setCurrentWidget(tab)
+            except:
+                return
 
         else:
             tab = Tab(self.tab_view, self._profile, url=arg, parent=self)
