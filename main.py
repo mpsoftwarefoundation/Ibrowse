@@ -74,7 +74,14 @@ class Ibrowse(QMainWindow):
 
     def openFromArg(self, arg: str):
         if os.path.exists(arg):
-            tab = Tab(self.tab_view, self._profile, parent=self).fromHtml(arg)
+            try:
+                tab = Tab(self.tab_view, self._profile, parent=self).fromHtml(arg)
+
+            except OSError:
+                tab = Tab(self.tab_view, self._profile, url=arg, parent=self)
+
+                self.tab_view.addTab(tab, '')
+                self.tab_view.setCurrentWidget(tab)
 
             self.tab_view.addTab(tab, 'File')
             self.tab_view.setCurrentWidget(tab)
@@ -105,7 +112,7 @@ class Ibrowse(QMainWindow):
         QCoreApplication.quit()
         QCoreApplication.processEvents()
 
-        status = QProcess.startDetached(sys.executable, [sys.argv[0]])
+        status = QProcess.startDetached(sys.executable, sys.argv)
         print(status)
 
     def profile(self) -> WebEngineProfile:
