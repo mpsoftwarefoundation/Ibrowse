@@ -63,7 +63,7 @@ class WebEngineView(QWebEngineView):
         self.customContextMenuRequested.connect(self.showMenu)
 
     def createWindow(self, _type: QWebEnginePage.WebWindowType):
-        self.tab_view.newTab()
+        self.tab_view.newTab(start_editing=False)
 
         return self.tab_view.currentTab().browser()
 

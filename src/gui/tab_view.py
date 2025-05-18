@@ -78,12 +78,13 @@ class TabView(QTabWidget):
 
         QTimer.singleShot(300, self.startEditing)
 
-    def newTab(self):
+    def newTab(self, start_editing=True):
         tab = Tab(self, self.parent().profile(), parent=self).fromHtml('resources/pages/new_tab.html')
         self.addTab(tab, 'New Tab')
         self.setCurrentIndex(self.indexOf(tab))
 
-        QTimer.singleShot(300, self.startEditing)
+        if start_editing:
+            QTimer.singleShot(300, self.startEditing)
 
     def newTabFromUrl(self, url: QUrl):
         tab = Tab(self, self.parent().profile(), url=url.toString(), parent=self)
