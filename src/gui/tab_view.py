@@ -29,14 +29,6 @@ class TabView(QTabWidget):
         close_tab_action.setShortcut(QKeySequence('Ctrl+E'))
         close_tab_action.triggered.connect(lambda: self.closeTab(self.currentIndex()))
 
-        switch_tab_next_action = self.addAction('Switch To Next Tab')
-        switch_tab_next_action.setShortcut(QKeySequence('Ctrl+right'))
-        switch_tab_next_action.triggered.connect(self.nextTab)
-
-        switch_tab_prev_action = self.addAction('Switch To Previous Tab')
-        switch_tab_prev_action.setShortcut(QKeySequence('Ctrl+left'))
-        switch_tab_prev_action.triggered.connect(self.previousTab)
-
         password_manager_action = self.addAction('Password Manager')
         password_manager_action.setShortcut(QKeySequence('Ctrl+K'))
         password_manager_action.triggered.connect(lambda: self.currentTab().passwordManager().show())
@@ -64,12 +56,6 @@ class TabView(QTabWidget):
 
     def back(self):
         self.currentTab().browser().back()
-
-    def nextTab(self):
-        self.setCurrentIndex((self.currentIndex() + 1) % self.count())
-
-    def previousTab(self):
-        self.setCurrentIndex((self.currentIndex() - 1) % self.count())
 
     def insertNewTab(self):
         tab = Tab(self, self.parent().profile(), parent=self).fromHtml('resources/pages/new_tab.html')

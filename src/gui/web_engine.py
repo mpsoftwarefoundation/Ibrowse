@@ -63,7 +63,13 @@ class WebEngineView(QWebEngineView):
         self.customContextMenuRequested.connect(self.showMenu)
 
     def createWindow(self, _type: QWebEnginePage.WebWindowType):
-        self.tab_view.newTab(start_editing=False)
+        if _type == QWebEnginePage.WebWindowType.WebBrowserTab:
+            self.tab_view.newTab(start_editing=False)
+
+        elif _type == QWebEnginePage.WebWindowType.WebBrowserWindow:
+            self.tab_view.parent().newWindow(start_editing=False)
+
+            return self.tab_view.parent().window.tab_view.currentTab().browser()
 
         return self.tab_view.currentTab().browser()
 
@@ -97,12 +103,6 @@ class WebEngineView(QWebEngineView):
             self.pageAction(
                 QWebEnginePage.WebAction.DownloadImageToDisk
             ).triggered.connect(lambda: self.saveImage(data))
-            self.pageAction(
-                QWebEnginePage.WebAction.OpenLinkInNewTab
-            ).triggered.connect(lambda: self.openLinkInNewTab(data))
-            self.pageAction(
-                QWebEnginePage.WebAction.OpenLinkInNewWindow
-            ).triggered.connect(lambda: self.openLinkInNewWindow(data))
             self.pageAction(
                 QWebEnginePage.WebAction.CopyImageToClipboard
             ).triggered.connect(lambda: self.copyImage(data))
@@ -193,12 +193,6 @@ class WebEngineView(QWebEngineView):
                 }})();
             """
             self.page().runJavaScript(script)
-
-    def openLinkInNewTab(self, data: QWebEngineContextMenuRequest):
-        self.tab_view.newTabFromUrl(data.linkUrl())
-
-    def openLinkInNewWindow(self, data: QWebEngineContextMenuRequest):
-        self.tab_view.parent().newWindowFromUrl(data.linkUrl())
 
     def normalizeUrl(self, url: str):
         parsed = urlparse(url if '://' in url else 'https://' + url)

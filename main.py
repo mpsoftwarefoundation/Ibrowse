@@ -89,12 +89,13 @@ class Ibrowse(QMainWindow):
             self.tab_view.addTab(tab, '')
             self.tab_view.setCurrentWidget(tab)
 
-    def newWindow(self):
+    def newWindow(self, start_editing=True):
         window = Ibrowse(self._profile)
         window.show()
         window.loadDefaultTab()
 
-        QTimer.singleShot(300, window.tab_view.startEditing)
+        if start_editing:
+            QTimer.singleShot(300, window.tab_view.startEditing)
 
         self.window = window
 
