@@ -200,3 +200,6 @@ class WebEngineView(QWebEngineView):
         path = parsed.path.rstrip('/')
 
         return f'{netloc}{path}'
+
+    def stopMedia(self):
+        self.page().setAudioMuted(True)

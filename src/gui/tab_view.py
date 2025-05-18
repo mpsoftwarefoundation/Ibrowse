@@ -78,6 +78,13 @@ class TabView(QTabWidget):
         self.setCurrentIndex(self.count() - 1)
 
     def closeTab(self, index: int):
+        tab = self.widget(index)
+
+        if tab is not None:
+            tab.browser().stopMedia()
+            tab.browser().deleteLater()
+            tab.deleteLater()
+
         self.removeTab(index)
 
         if self.count() == 0:
