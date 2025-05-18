@@ -62,6 +62,11 @@ class WebEngineView(QWebEngineView):
 
         self.customContextMenuRequested.connect(self.showMenu)
 
+    def createWindow(self, _type: QWebEnginePage.WebWindowType):
+        self.tab_view.newTab()
+
+        return self.tab_view.currentTab().browser()
+
     def showMenu(self, pos: QPoint):
         menu = self.createStandardContextMenu()
         menu.removeAction(self.pageAction(QWebEnginePage.WebAction.DownloadLinkToDisk))
