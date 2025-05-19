@@ -98,9 +98,6 @@ class WebEngineView(QWebEngineView):
         if not hasattr(self, 'connected_actions'):
             self.connected_actions = True
             self.pageAction(
-                QWebEnginePage.WebAction.SavePage
-            ).triggered.connect(self.savePage)
-            self.pageAction(
                 QWebEnginePage.WebAction.DownloadImageToDisk
             ).triggered.connect(lambda: self.saveImage(data))
             self.pageAction(
@@ -112,15 +109,6 @@ class WebEngineView(QWebEngineView):
 
         menu.exec(self.mapToGlobal(pos))
 
-    def savePage(self):
-        filename, _ = QFileDialog.getSaveFileName(self,
-                                                  'Save Page',
-                                                  self.url().toString(),
-                                                  'HTML files (*.html *.htm)')
-
-        if filename and filename.endswith(('.html', '.htm')):
-            ibrowse.write_html(filename, self.page().toHtml(print))
-
     def saveImage(self, data: QWebEngineContextMenuRequest):
         response = requests.get(data.mediaUrl().toString())
 
@@ -129,7 +117,7 @@ class WebEngineView(QWebEngineView):
             filename, _ = QFileDialog.getSaveFileName(self,
                                                       'Save Image As',
                                                       url_filename,
-                                                      'All files (*.)')
+                                                      'Image files (*.)')
 
             if filename and '.' in filename:
                 ibrowse.write_bytes(filename, response.content)
