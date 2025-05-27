@@ -10,9 +10,16 @@ class QuickSearchBar(QMenu):
         super().__init__(parent)
         self.setAcceptDrops(False)
         self.setWindowFlag(Qt.WindowType.Popup)
-        self.setObjectName('blankWidget')
+        self.setObjectName('quickSearchBar')
 
         self.createUI()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape:
+            self.animateClose()
+
+        else:
+            super().keyPressEvent(event)
 
     def exec(self, pos=None):
         if pos:
@@ -22,7 +29,7 @@ class QuickSearchBar(QMenu):
         parent_center = self.parent().rect().center()
         global_center = self.parent().mapToGlobal(parent_center)
         target_width = 400
-        target_height = 50
+        target_height = 60
 
         start_rect = QRect(
             global_center.x(),
@@ -58,7 +65,7 @@ class QuickSearchBar(QMenu):
         self.search_box = QLineEdit()
         self.search_box.setObjectName('quickSearchBar')
         self.search_box.setPlaceholderText('Search...')
-        self.search_box.setFixedSize(375, 30)
+        self.search_box.setFixedSize(375, 40)
         self.search_box.returnPressed.connect(lambda: self.search(self.search_box.text()))
         self.container.layout().addWidget(self.search_box, alignment=Qt.AlignmentFlag.AlignCenter)
 

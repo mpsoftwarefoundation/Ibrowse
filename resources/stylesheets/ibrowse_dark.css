@@ -418,11 +418,17 @@ QToolTip {
 }
 
 #quickSearchBar {
+    background-color: transparent;
+    border: none;
+}
+
+#quickSearchBar QLineEdit {
     background-color: #686868;
     color: #ffffff;
     border-radius: 3px;
     padding: 5px;
     font-family: "Segeo UI";
+    font-size: 20px;
 }
 
 #button {
