@@ -145,6 +145,9 @@ class Tab(QWidget):
 
             return
 
+        elif query.startswith('http'):
+            pass
+
         elif '.com' in query:
             query = f'https://{query}'
 
