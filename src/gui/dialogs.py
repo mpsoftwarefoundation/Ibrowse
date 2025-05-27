@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QWidget, QHBoxLayout, QPushButton, QLineEdit, QListWidget,
     QListWidgetItem, QApplication, QFileDialog, QDialogButtonBox)
-from src.gui.widgets import StringInput
+from src.gui.inputs import StringInput
 
 
 class PasswordsDialog(QDialog):
@@ -30,12 +30,12 @@ class PasswordsDialog(QDialog):
         container.layout().setContentsMargins(0, 0, 0, 0)
 
         add_password_btn = QPushButton(QIcon('resources/icons/ui/plus_icon.svg'), '', self)
-        add_password_btn.setObjectName('searchBarButton')
+        add_password_btn.setObjectName('button')
         add_password_btn.setToolTip('Add a saved password')
         add_password_btn.setFixedSize(30, 30)
         add_password_btn.clicked.connect(self.addPassword)
         import_from_chrome_btn = QPushButton(QIcon('resources/icons/ui/folder_icon.svg'), '', self)
-        import_from_chrome_btn.setObjectName('searchBarButton')
+        import_from_chrome_btn.setObjectName('button')
         import_from_chrome_btn.setToolTip('Import passwords from Chrome')
         import_from_chrome_btn.setFixedSize(30, 30)
         import_from_chrome_btn.clicked.connect(self.importFromChrome)

@@ -1,7 +1,7 @@
 import os
 import sys
 import ibrowse
-from PyQt6.QtCore import QUrl, QTimer, QCoreApplication, QProcess
+from PyQt6.QtCore import QUrl, QTimer, QCoreApplication, QProcess, Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QMainWindow, QApplication, QMessageBox
 from src.gui.tab import Tab
@@ -61,10 +61,7 @@ class Ibrowse(QMainWindow):
 
             return
 
-        self.tab_view.addTab(
-            Tab(self.tab_view, self._profile, parent=self).fromHtml('resources/pages/startup.html'),
-            'Welcome'
-        )
+        self.loadDefaultTab()
 
     def loadDefaultTab(self):
         self.tab_view.addTab(
@@ -119,6 +116,7 @@ class Ibrowse(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
+    app.setEffectEnabled(Qt.UIEffect.UI_AnimateCombo, False)
     app.setStyleSheet(ibrowse.read_html('resources/stylesheets/ibrowse_dark.css'))
 
     window = Ibrowse()
@@ -127,6 +125,7 @@ def main():
     app.processEvents()
 
     window.loadTabs()
+    window.update()
 
     if len(sys.argv) > 1:
         window.openFromArg(sys.argv[1])

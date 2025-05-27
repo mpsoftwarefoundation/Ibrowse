@@ -2,7 +2,8 @@ import os
 import subprocess
 import sys
 import ibrowse
-from PyQt6.QtCore import QUrl
+from urllib.parse import urlparse
+from PyQt6.QtCore import QSize, QUrl
 from PyQt6.QtGui import QKeySequence, QAction, QIcon
 from PyQt6.QtWebEngineCore import QWebEngineProfile, QWebEngineSettings, QWebEnginePage
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -10,8 +11,10 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QAp
     QMessageBox)
 from src.gui.dialogs import PasswordsDialog, CreateBookmarkDialog
 from src.gui.web_engine import WebEnginePage, WebEngineView
-from src.gui.widgets import SearchBar, QuickSearchBar, EngineTypeCombo, ContextMenu
-from urllib.parse import urlparse
+from src.gui.engine_selector import EngineSelector
+from src.gui.search_bar import SearchBar
+from src.gui.quick_search_bar import QuickSearchBar
+from src.gui.context_menu import ContextMenu
 
 
 class Tab(QWidget):
@@ -35,37 +38,54 @@ class Tab(QWidget):
 
     def createUI(self):
         nav_bar = QWidget()
-        nav_bar.setFixedHeight(30)
+        nav_bar.setObjectName('navBar')
+        nav_bar.setFixedHeight(35)
         nav_bar.setLayout(QHBoxLayout())
         nav_bar.layout().setContentsMargins(5, 5, 5, 0)
 
+        size = QSize(25, 30)
+
         back_btn = QPushButton(QIcon('resources/icons/ui/back_icon.svg'), '', self)
-        back_btn.setObjectName('searchBarButton')
+        back_btn.setFixedSize(size)
+        back_btn.setObjectName('button')
         back_btn.setToolTip('Navigate backwards')
         forward_btn = QPushButton(QIcon('resources/icons/ui/forward_icon.svg'), '', self)
-        forward_btn.setObjectName('searchBarButton')
+        forward_btn.setFixedSize(size)
+        forward_btn.setObjectName('button')
         forward_btn.setToolTip('Navigate forwards')
         reload_btn = QPushButton(QIcon('resources/icons/ui/reload_icon.svg'), '', self)
-        reload_btn.setObjectName('searchBarButton')
+        reload_btn.setFixedSize(size)
+        reload_btn.setObjectName('button')
         reload_btn.setShortcut(QKeySequence('Ctrl+R'))
         reload_btn.setToolTip('Reload the current page')
         menu_btn = QPushButton(QIcon('resources/icons/ui/menu_access_icon.svg'), '', self)
-        menu_btn.setObjectName('searchBarButton')
-        menu_btn.setToolTip('Ibrowse menu')
+        menu_btn.setFixedSize(size)
+        menu_btn.setObjectName('button')
+        menu_btn.setToolTip('Ibrowse Menu')
         menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
 
-        self._engine_combo = EngineTypeCombo(self)
+        self._engine_combo = EngineSelector(self)
+        self._engine_combo.setMinimumWidth(50)
         self._engine_combo.setCurrentText(ibrowse.preferred_browser())
         self._engine_combo.setToolTip('Change the preferred search engine')
         self._search_bar = SearchBar()
+        self._search_bar.setMinimumWidth(400)
         self._search_bar.setToolTip('Enter a url or search query')
         self._search_bar.returnPressed.connect(lambda: self.search(self._search_bar.text()))
+
+        combo_search_container = QWidget()
+        combo_search_container.setLayout(QHBoxLayout())
+        combo_search_container.layout().setContentsMargins(0, 0, 0, 0)
+        combo_search_container.layout().setSpacing(0)
+        combo_search_container.layout().addWidget(self._engine_combo)
+        combo_search_container.layout().addWidget(self._search_bar)
 
         nav_bar.layout().addWidget(back_btn)
         nav_bar.layout().addWidget(forward_btn)
         nav_bar.layout().addWidget(reload_btn)
-        nav_bar.layout().addWidget(self._engine_combo)
-        nav_bar.layout().addWidget(self._search_bar)
+        nav_bar.layout().addStretch()
+        nav_bar.layout().addWidget(combo_search_container)
+        nav_bar.layout().addStretch()
         nav_bar.layout().addWidget(menu_btn)
 
         self._page = WebEnginePage(self.profile, self.tab_view)
@@ -268,7 +288,7 @@ cache_dir = r"{ibrowse.cache_dir()}"
 
 if os.path.exists(cache_dir):
     shutil.rmtree(cache_dir, ignore_errors=True)
-    
+
 os.mkdir(r"{ibrowse.config_dir()}/cache")
             """)
 
@@ -276,7 +296,7 @@ os.mkdir(r"{ibrowse.config_dir()}/cache")
 
             self.tab_view.parent().restart()
 
-    def engineCombo(self) -> EngineTypeCombo:
+    def engineCombo(self) -> EngineSelector:
         return self._engine_combo
 
     def searchBar(self) -> SearchBar:
