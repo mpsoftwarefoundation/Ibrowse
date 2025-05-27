@@ -10,7 +10,6 @@ class SearchBar(QLineEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAcceptDrops(False)
-        self.setClearButtonEnabled(True)
         self.setPlaceholderText('Search...')
         self.installEventFilter(self)
 

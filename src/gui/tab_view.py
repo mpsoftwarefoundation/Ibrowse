@@ -84,16 +84,20 @@ class TabView(QTabWidget):
         bookmark_tab_action.setShortcut(QKeySequence('Ctrl+B'))
         bookmark_tab_action.triggered.connect(lambda: self.currentTab().bookmark())
 
-        quick_edit_action = self.addAction('Quick Edit')
-        quick_edit_action.setShortcut(QKeySequence('Ctrl+Q'))
-        quick_edit_action.triggered.connect(lambda: self.currentTab().quickSearch())
+        jump_to_search_action = self.addAction('Jump To Search Bar')
+        jump_to_search_action.setShortcut(QKeySequence('Ctrl+/'))
+        jump_to_search_action.triggered.connect(self.startEditing)
+
+        quick_search_action = self.addAction('Quick Search')
+        quick_search_action.setShortcut(QKeySequence('Ctrl+Q'))
+        quick_search_action.triggered.connect(lambda: self.currentTab().quickSearch())
 
         self.addAction(new_tab_action)
         self.addAction(new_window_action)
         self.addAction(close_tab_action)
         self.addAction(password_manager_action)
         self.addAction(bookmark_tab_action)
-        self.addAction(quick_edit_action)
+        self.addAction(quick_search_action)
 
     def startEditing(self):
         self.currentTab().searchBar().startEditing()

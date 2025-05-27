@@ -1,134 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Help</title>
-    <style>
-      body {
-        background-color: #121212;
-        color: #e0e0e0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        margin: 0;
-        padding: 20px;
-      }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Help</title>
+        <style>
+            body {
+                background-color: #121212;
+                color: #e0e0e0;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 20px;
+            }
 
-      div {
-        max-width: 1000px;
-        margin: 0 auto;
-        background: #1e1e1e;
-        padding: 40px 60px;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        text-align: left;
-      }
+            div {
+                max-width: 1000px;
+                margin: 0 auto;
+                background: #1e1e1e;
+                padding: 40px 60px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+                text-align: left;
+            }
 
-      p {
-        margin: 0 0 1em;
-        font-size: 1.2rem;
-        color: #ccc;
-      }
+            p {
+                margin: 0 0 1em;
+                font-size: 1.2rem;
+                color: #ccc;
+            }
 
-      code {
-        background-color: #2e2e2e;
-        padding: 4px 8px;
-        border-radius: 6px;
-        color: #9cdcfe;
-        font-family: monospace;
-        font-size: 1rem;
-      }
-    </style>
-  </head>
-  <body>
-    <div>
-        <h1 align="center">Ibrowse User Guide</h1>
-        <p>
-            Ibrowse is the minimalistic browser built off of
-            simplicity and ease-of-use.
-        </p>
-        <p>
-            This guide will help you understand Ibrowse and
-            its advanced tools.
-        </p>
-        <br>
-        <h2>
-            Section 1: Search Bar
-        </h2>
-        <p>
-            The search bar can be used to search for anything on the
-            internet, whether it's a url or a brownie recipe. Upon typing,
-            you may notice a suggestions popup. This popup suggests bookmarks
-            and commands when needed.
-        </p>
-        <p>
-            You may also notice the choice box with "Google" selected by default.
-            This is the <i>browser engine</i> you can use for searching. You can
-            choose Google, DuckDuckGo, Bing, and more beyond that.
-        </p>
-        <p>
-            In the corner with three dots (...) you can access the <b>browser menu</b>,
-            to add things like passwords and bookmarks, create new tabs, and
-            open new windows.
-        </p>
-        <h2>
-            Section 2: Passwords & Bookmarks
-        </h2>
-        <p>
-            Passwords and bookmarks can be added in the <b>browser menu</b>, via the
-            <code>Passwords...</code> or <code>Bookmarks ▶</code> action.
-        </p>
-        <p>
-            To work with passwords, open the <b>password manager</b> with
-            <code>Passwords...</code>. You can then edit, create new, or even sync
-            passwords from Google Chrome.
-        </p>
-        <p>
-            To work with bookmarks, either click <code>Bookmark This Tab</code> to add
-            a bookmark, or navigate to <code>Bookmarks ▶</code> to access bookmarked
-            tabs.
-        </p>
-        <p>
-            <i>About Passwords & Bookmarks...</i>
-        </p>
-        <p>
-            All passwords and bookmarks you create in Ibrowse are stored on your local
-            machine. Ibrowse has no access to any cloud service or database, therefore,
-            any user data (from Ibrowse) is stored in a <code>config.json</code> file.
-        </p>
-        <h2>
-            Section 3: Commands
-        </h2>
-        <p>
-            Previously mentioned in the search bar section, you can actually type commands
-            into the search bar. You probably typed <code>/help</code> to access this page!
-        </p>
-        <p>
-            Listed below is all the commands that can be used in the search bar:
-        </p>
-        <ul>
-            <li><code>/help</code>: access this page again</li>
-            <li><code>/welcome</code>: open the welcome page shown on startup</li>
-            <li><code>/close</code>: close the active tab</li>
-            <li><code>/exit</code>: close Ibrowse entirely</li>
-        </ul>
-        <h2>
-            Section 4: Shortcuts
-        </h2>
-        <p>
-            There's always a way to browse quicker, so here's a list of shortcuts to use
-            Ibrowse like a pro😎:
-        </p>
-        <ul>
-            <li>Use <code>Ctrl+N</code> to create a new tab and select it</li>
-            <li>Use <code>Ctrl+Shift+N</code> to create a new window</li>
-            <li>Use <code>Ctrl+Q</code> to open the quick search bar</li>
-            <li>Use <code>Ctrl+K</code> to open the password manager</li>
-            <li>Use <code>Ctrl+B</code> to bookmark the current tab</li>
-        </ul>
-        <p>
-            <b>Now get busy browsing!</b>
-        </p>
-    </div>
-  </body>
+            code {
+                background-color: #2e2e2e;
+                padding: 4px 8px;
+                border-radius: 6px;
+                color: #9cdcfe;
+                font-family: monospace;
+                font-size: 1rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1 align="center">Ibrowse User Guide</h1>
+            <p>
+                Ibrowse is the minimalistic browser built off of simplicity and
+                ease-of-use.
+            </p>
+            <p>
+                This guide will help you understand Ibrowse and its advanced
+                tools.
+            </p>
+            <br />
+            <h2>Section 1: Search Bar</h2>
+            <p>
+                The search bar can be used to search for anything on the
+                internet, whether it's a url or a brownie recipe. Upon typing,
+                you may notice a suggestions popup. This popup suggests
+                bookmarks and commands when needed.
+            </p>
+            <p>
+                You may also notice the choice box with "Google" selected by
+                default. This is the <i>browser engine</i> you can use for
+                searching. You can choose Google, DuckDuckGo, Bing, and more
+                beyond that.
+            </p>
+            <p>
+                In the corner with three dots (...) you can access the
+                <b>browser menu</b>, to add things like passwords and bookmarks,
+                create new tabs, and open new windows.
+            </p>
+            <h2>Section 2: Passwords & Bookmarks</h2>
+            <p>
+                Passwords and bookmarks can be added in the <b>browser menu</b>,
+                via the <code>Passwords...</code> or
+                <code>Bookmarks ▶</code> action.
+            </p>
+            <p>
+                To work with passwords, open the <b>password manager</b> with
+                <code>Passwords...</code>. You can then edit, create new, or
+                even sync passwords from Google Chrome.
+            </p>
+            <p>
+                To work with bookmarks, either click
+                <code>Bookmark This Tab</code> to add a bookmark, or navigate to
+                <code>Bookmarks ▶</code> to access bookmarked tabs.
+            </p>
+            <p>
+                <i>About Passwords & Bookmarks...</i>
+            </p>
+            <p>
+                All passwords and bookmarks you create in Ibrowse are stored on
+                your local machine. Ibrowse has no access to any cloud service
+                or database, therefore, any user data (from Ibrowse) is stored
+                in a <code>config.json</code> file.
+            </p>
+            <h2>Section 3: Commands</h2>
+            <p>
+                Previously mentioned in the search bar section, you can actually
+                type commands into the search bar. You probably typed
+                <code>/help</code> to access this page!
+            </p>
+            <p>
+                Listed below is all the commands that can be used in the search
+                bar:
+            </p>
+            <ul>
+                <li><code>/help</code> access this page again</li>
+                <li>
+                    <code>/welcome</code> open the welcome page shown on startup
+                </li>
+                <li><code>/close</code> close the active tab</li>
+                <li><code>/exit</code> close Ibrowse entirely</li>
+            </ul>
+            <h2>Section 4: Shortcuts</h2>
+            <p>
+                There's always a way to browse quicker, so here's a list of
+                shortcuts to use Ibrowse like a pro😎:
+            </p>
+            <ul>
+                <li>
+                    Use <code>Ctrl+N</code> to create a new tab and select it
+                </li>
+                <li>Use <code>Ctrl+Shift+N</code> to create a new window</li>
+                <li>Use <code>Ctrl+E</code> to close the current tab</li>
+                <li>Use <code>Ctrl+/</code> to jump to the search bar</li>
+                <li>Use <code>Ctrl+Q</code> to open the quick search bar</li>
+                <li>Use <code>Ctrl+K</code> to open the password manager</li>
+                <li>Use <code>Ctrl+B</code> to bookmark the current tab</li>
+            </ul>
+            <p>
+                <b>Now get busy browsing!</b>
+            </p>
+        </div>
+    </body>
 </html>
