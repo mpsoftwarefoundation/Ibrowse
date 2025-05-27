@@ -20,7 +20,8 @@ class SearchBar(QLineEdit):
     def focusInEvent(self, event):
         super().focusInEvent(event)
 
-        QTimer.singleShot(0, self.startEditing)
+        if event.reason() != Qt.FocusReason.PopupFocusReason:
+            QTimer.singleShot(0, self.startEditing)
 
     def startEditing(self):
         self.setFocus()
