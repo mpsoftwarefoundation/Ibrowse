@@ -53,8 +53,8 @@ class Ibrowse(QMainWindow):
     def loadTabs(self):
         if len(ibrowse.previous_tabs()) > 0:
             for url in ibrowse.previous_tabs():
-                if not 'https' in url:
-                    break
+                if not url.startswith('https'):
+                    continue
 
                 tab = Tab(self.tab_view, self._profile, url=url, parent=self)
                 self.tab_view.addTab(tab, '')
@@ -125,8 +125,7 @@ def main():
 
     app.processEvents()
 
-    window.loadTabs()
-    window.update()
+    QTimer.singleShot(0, window.loadTabs)
 
     if len(sys.argv) > 1:
         window.openFromArg(sys.argv[1])
