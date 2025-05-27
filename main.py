@@ -125,10 +125,10 @@ def main():
 
     app.processEvents()
 
-    QTimer.singleShot(0, window.loadTabs)
-
     if len(sys.argv) > 1:
-        window.openFromArg(sys.argv[1])
+            window.openFromArg(sys.argv[1])
+    else:
+        window.loadTabs()
 
     # Crash handler
     def handle_exception(exctype, value, tb):

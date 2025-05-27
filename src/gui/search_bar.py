@@ -32,12 +32,13 @@ class SearchBar(QLineEdit):
         self.blockSignals(False)
 
     def updateCompleter(self):
-        items = COMMANDS
+        items = COMMANDS.copy()
 
         for url, name in ibrowse.bookmarks().items():
             items.append(url)
 
         self._completer = QCompleter(items)
         self._completer.setCaseSensitivity(Qt.CaseSensitivity.CaseInsensitive)
-        self._completer.setCompletionMode(QCompleter.CompletionMode.UnfilteredPopupCompletion)
+        self._completer.setCompletionMode(QCompleter.CompletionMode.PopupCompletion)
+
         self.setCompleter(self._completer)
