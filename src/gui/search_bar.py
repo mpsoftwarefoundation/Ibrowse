@@ -1,3 +1,4 @@
+from PyQt6.QtGui import QIcon
 import ibrowse
 from PyQt6.QtCore import QEvent, QTimer, QUrl, Qt, QRect, QPropertyAnimation, QEasingCurve, QPoint
 from PyQt6.QtWidgets import (QLineEdit, QCompleter, QMenu, QVBoxLayout, QWidget, QWidgetAction, QComboBox, QApplication,
@@ -9,8 +10,11 @@ class SearchBar(QLineEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAcceptDrops(False)
+        self.setClearButtonEnabled(True)
         self.setPlaceholderText('Search...')
         self.installEventFilter(self)
+
+        self.addAction(QIcon('resources/icons/ui/search_icon.svg'), QLineEdit.ActionPosition.LeadingPosition)
 
         self.updateCompleter()
 
