@@ -1,12 +1,59 @@
-from PyQt6.QtCore import QTimer, QUrl
-from PyQt6.QtGui import QKeySequence
-from PyQt6.QtWidgets import QTabWidget
+from PyQt6.QtCore import QTimer, QMimeData, QUrl, Qt
+from PyQt6.QtGui import QDragLeaveEvent, QDropEvent, QDragEnterEvent, QDragMoveEvent, QKeySequence
+from PyQt6.QtWidgets import QTabBar, QTabWidget, QWidget
 from src.gui.tab import Tab
+
+
+class TabBar(QTabBar):
+    def __init__(self, tab_view: QTabWidget, parent=None):
+        super().__init__(parent)
+        self.setAcceptDrops(True)
+
+        self._tab_view = tab_view
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+            self.createPlaceholderTab()
+
+    def dragMoveEvent(self, event: QDragMoveEvent):
+        if event.mimeData().hasUrls():
+            event.acceptProposedAction()
+
+    def dragLeaveEvent(self, event: QDragLeaveEvent):
+        self.removePlaceholderTab()
+
+        super().dragLeaveEvent(event)
+
+    def dropEvent(self, event: QDropEvent):
+        mime_data = event.mimeData()
+
+        if mime_data.hasUrls():
+            for url in mime_data.urls():
+                if url.isValid() and url.scheme().startswith("http"):
+                    self._tab_view.newTabFromUrl(url)
+
+            event.acceptProposedAction()
+
+        self.removePlaceholderTab()
+
+    def createPlaceholderTab(self):
+        if not hasattr(self, 'dummy_tab'):
+            self.dummy_tab = QWidget()
+            self._tab_view.addTab(self.dummy_tab, 'Drop the url to add it')
+
+    def removePlaceholderTab(self):
+        if hasattr(self, 'dummy_tab'):
+            self._tab_view.removeTab(self._tab_view.indexOf(self.dummy_tab))
+
+            del self.dummy_tab
 
 
 class TabView(QTabWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setTabBar(TabBar(self, self))
         self.setDocumentMode(True)
         self.setMovable(True)
         self.setTabsClosable(True)

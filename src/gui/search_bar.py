@@ -8,7 +8,7 @@ from src.gui.commands import COMMANDS
 class SearchBar(QLineEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(30)
+        self.setAcceptDrops(False)
         self.setPlaceholderText('Search...')
         self.installEventFilter(self)
 

@@ -65,9 +65,11 @@ class Tab(QWidget):
         menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
 
         self._engine_combo = EngineSelector(self)
+        self._engine_combo.setFixedHeight(size.height())
         self._engine_combo.setCurrentText(ibrowse.preferred_browser())
         self._engine_combo.setToolTip('Change the preferred search engine')
         self._search_bar = SearchBar()
+        self._search_bar.setFixedHeight(size.height())
         self._search_bar.setToolTip('Enter a url or search query')
         self._search_bar.returnPressed.connect(lambda: self.search(self._search_bar.text()))
 

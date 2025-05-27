@@ -4,7 +4,7 @@ from PyQt6.QtWidgets import QComboBox
 class EngineSelector(QComboBox):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(30)
+        self.setAcceptDrops(False)
 
         self._engine_types = {
             'Google': 'google.com/search?q=',

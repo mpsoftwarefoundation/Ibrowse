@@ -8,6 +8,7 @@ from src.gui.commands import COMMANDS
 class QuickSearchBar(QMenu):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.setAcceptDrops(False)
         self.setWindowFlag(Qt.WindowType.Popup)
         self.setObjectName('blankWidget')
 
