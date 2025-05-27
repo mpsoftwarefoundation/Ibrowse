@@ -117,6 +117,7 @@ class Ibrowse(QMainWindow):
 def main():
     app = QApplication(sys.argv)
     app.setEffectEnabled(Qt.UIEffect.UI_AnimateCombo, False)
+    app.setEffectEnabled(Qt.UIEffect.UI_AnimateTooltip, False)
     app.setStyleSheet(ibrowse.read_html('resources/stylesheets/ibrowse_dark.css'))
 
     window = Ibrowse()
