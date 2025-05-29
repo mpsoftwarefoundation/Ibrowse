@@ -17,6 +17,13 @@ class SearchBar(QLineEdit):
 
         self.updateCompleter()
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Escape:
+            self.clearFocus()
+
+        else:
+            super().keyPressEvent(event)
+
     def focusInEvent(self, event):
         super().focusInEvent(event)
 
