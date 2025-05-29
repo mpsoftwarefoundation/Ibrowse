@@ -24,30 +24,27 @@ QWidget {
 
 QMenu {
     padding: 3px;
-    background-color: #181818;
-    border: 1px solid #181818;
-    border-radius: 10px;
+    background-color: #3d3d3d;
+    border: 2px solid #202020;
+    border-radius: 5px;
 }
 
 QMenu::item {
-    border: 2px solid transparent;
-    border-radius: 5px;
-    min-width: 180px;
-    padding: 5px 10px 5px 10px;
-    margin-top: 2px;
-    margin-bottom: 2px;
     background-color: transparent;
-    color: #d3d3d3;
+    color: #c2c2c2;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 2px;
 }
 
 QMenu::item:hover {
-    background-color: #3f3f3f;
-    color: #c2c2c2;
+    background-color: #686868;
+    color: #ffffff;
 }
 
 QMenu::item:selected {
-    background-color: #3f3f3f;
-    color: white;
+    background-color: #686868;
+    color: #ffffff;
 }
 
 QMenu::item:disabled {
@@ -73,9 +70,8 @@ QMenu::indicator:checked {
 }
 
 QMenu:separator {
-    background: #2f2f2f;
-    padding-left: 10px;
-    padding-right: 10px;
+    background: #202020;
+    margin: 2px;
     height: 1px;
 }
 
@@ -404,7 +400,8 @@ QToolTip {
 }
 
 #navBar QComboBox QAbstractItemView {
-    border-radius: 5px;
+    border-radius: 0px;
+    border-top-left-radius: 5px;
     min-height: 300px;
 }
 
