@@ -27,9 +27,8 @@ class Tab(QWidget):
         self.tab_view = tab_view
         self.profile = profile
         self._passwords_dialog = PasswordsDialog(self)
-
         self._print_result_loop = QEventLoop()
-        self._printer = QPrinter()
+        self._printer = None
 
         self.createUI()
         self.createBrowser()
@@ -276,6 +275,9 @@ class Tab(QWidget):
         self.profile.clearAllVisitedLinks()
 
     def printPreview(self):
+        if self._printer is None:
+            self._printer = QPrinter()
+
         preview = QPrintPreviewDialog(self._printer, self._browser)
         preview.paintRequested.connect(self.printDocument)
 
