@@ -70,7 +70,9 @@ class TabBar(QTabBar):
 
         self.setTabEnabled(index, False)
         self.setTabIcon(index, QIcon('resources/icons/ui/locked_icon.svg'))
-        self.setTabToolTip(index, 'This tab is locked, right click to unlock it')
+        self.setTabToolTip(index, 'This tab is locked')
+
+        self.setCurrentIndex(index)
 
     def unlockTab(self, tab):
         tab.setLocked(False)
