@@ -1,6 +1,6 @@
 import ibrowse
-from PyQt6.QtCore import QTimer, QMimeData, QUrl, Qt
-from PyQt6.QtGui import QAction, QDragLeaveEvent, QDropEvent, QDragEnterEvent, QDragMoveEvent, QIcon, QKeySequence
+from PyQt6.QtCore import QPoint, QTimer, QMimeData, QUrl, Qt
+from PyQt6.QtGui import QAction, QContextMenuEvent, QDragLeaveEvent, QDropEvent, QDragEnterEvent, QDragMoveEvent, QIcon, QKeySequence
 from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QTabBar, QTabWidget, QWidget, QWidgetAction
 from src.gui.tab import Tab
 from src.gui.dialogs import PasswordsDialog
@@ -13,6 +13,29 @@ class TabBar(QTabBar):
         self.setAcceptDrops(True)
 
         self._tab_view = tab_view
+
+    def mouseDoubleClickEvent(self, event):
+        if not self._tab_view.widget(self.tabAt(event.pos())):
+            super().mouseDoubleClickEvent(event)
+
+    def contextMenuEvent(self, event: QContextMenuEvent):
+        if not hasattr(self, 'menu'):
+            self.menu = ContextMenu(self)
+
+        self.menu.clear()
+
+        tab = self._tab_view.widget(self.tabAt(event.pos()))
+
+        if tab:
+            if tab.isLocked():
+                unlock_tab_action = self.menu.addAction('Unlock This Tab')
+                unlock_tab_action.triggered.connect(lambda: self.unlockTab(tab))
+
+            else:
+                lock_tab_action = self.menu.addAction('Lock This Tab')
+                lock_tab_action.triggered.connect(lambda: self.lockTab(tab))
+
+        self.menu.exec(event.pos())
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
@@ -40,6 +63,23 @@ class TabBar(QTabBar):
             event.acceptProposedAction()
 
         self.removePlaceholderTab()
+
+    def lockTab(self, tab):
+        tab.setLocked(True)
+        index = self._tab_view.indexOf(tab)
+
+        self.setTabEnabled(index, False)
+        self.setTabIcon(index, QIcon('resources/icons/ui/locked_icon.svg'))
+        self.setTabToolTip(index, 'This tab is locked, right click to unlock it')
+
+    def unlockTab(self, tab):
+        tab.setLocked(False)
+        index = self._tab_view.indexOf(tab)
+
+        if not self.isTabEnabled(index):
+            self.setTabEnabled(index, True)
+            self.setTabIcon(index, tab.browser().icon())
+            self.setTabToolTip(index, tab.browser().title())
 
     def createPlaceholderTab(self):
         if not hasattr(self, 'dummy_tab'):

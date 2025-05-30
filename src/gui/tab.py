@@ -25,6 +25,7 @@ class Tab(QWidget):
 
         self.tab_view = tab_view
         self.profile = profile
+        self._is_locked = False
         self._print_result_loop = QEventLoop()
         self._printer = None
 
@@ -232,6 +233,12 @@ class Tab(QWidget):
             self._browser.urlChanged.connect(self._search_bar.setUrl)
 
         return self
+
+    def setLocked(self, locked: bool):
+        self._is_locked = locked
+
+    def isLocked(self) -> bool:
+        return self._is_locked
 
     def engineCombo(self) -> EngineSelector:
         return self._engine_combo
