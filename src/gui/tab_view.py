@@ -190,7 +190,7 @@ class TabView(QTabWidget):
         for url, name in ibrowse.bookmarks().items():
             action = QWidgetAction(self)
             action.url = url
-            action.triggered.connect(lambda _, u=action.url: self.search(u))
+            action.triggered.connect(lambda _, u=action.url: self.currentTab().search(u))
 
             container = QWidget()
             container.setLayout(QHBoxLayout())
