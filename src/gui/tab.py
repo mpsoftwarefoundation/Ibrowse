@@ -10,12 +10,11 @@ from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import (QDialog, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QApplication, QWidgetAction, QLabel, QMenu,
     QMessageBox)
 from PyQt6.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
-from src.gui.dialogs import PasswordsDialog, CreateBookmarkDialog
+from src.gui.dialogs import CreateBookmarkDialog
 from src.gui.web_engine import WebEnginePage, WebEngineView
 from src.gui.engine_selector import EngineSelector
 from src.gui.search_bar import SearchBar
 from src.gui.quick_search_bar import QuickSearchBar
-from src.gui.context_menu import ContextMenu
 
 
 class Tab(QWidget):
@@ -26,7 +25,6 @@ class Tab(QWidget):
 
         self.tab_view = tab_view
         self.profile = profile
-        self._passwords_dialog = PasswordsDialog(self)
         self._print_result_loop = QEventLoop()
         self._printer = None
 
@@ -65,7 +63,7 @@ class Tab(QWidget):
         menu_btn.setFixedSize(size)
         menu_btn.setObjectName('button')
         menu_btn.setToolTip('Ibrowse Menu')
-        menu_btn.clicked.connect(lambda: self.showMenu(menu_btn))
+        menu_btn.clicked.connect(lambda: self.tab_view.showMenu(menu_btn))
 
         self._engine_combo = EngineSelector(self)
         self._engine_combo.setFixedHeight(size.height())
@@ -100,10 +98,11 @@ class Tab(QWidget):
 
     def createBrowser(self):
         self._browser.urlChanged.connect(self._search_bar.setUrl)
-        self._browser.titleChanged.connect(self.updateTab)
-        self._browser.iconChanged.connect(self.updateTab)
-        self._browser.loadFinished.connect(self.updateTab)
+        self._browser.titleChanged.connect(self.tab_view.updateTab)
+        self._browser.iconChanged.connect(self.tab_view.updateTab)
+        self._browser.loadFinished.connect(self.tab_view.updateTab)
         self._browser.printFinished.connect(self.printFinished)
+        self._browser.printRequested.connect(self.printPreview)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.AutoLoadIconsForPage, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.AutoLoadImages, True)
@@ -116,67 +115,6 @@ class Tab(QWidget):
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ScrollAnimatorEnabled, ibrowse.smooth_scrolling_enabled())
 
-    def showMenu(self, button: QPushButton):
-        if not hasattr(self, 'menu'):
-            self.menu = ContextMenu(self)
-            self.menu.setAnimationEnabled(True)
-
-            new_tab_action = QAction('New Tab', self)
-            new_tab_action.triggered.connect(self.tab_view.insertNewTab)
-            new_window_action = QAction('New Window', self)
-            new_window_action.triggered.connect(self.tab_view.parent().newWindow)
-            bookmark_tab_action = QAction('Bookmark This Tab', self)
-            bookmark_tab_action.triggered.connect(self.bookmark)
-            passwords_action = QAction('Passwords...', self)
-            passwords_action.triggered.connect(self._passwords_dialog.show)
-
-            if not hasattr(self, 'bookmarks_menu'):
-                self.bookmarks_menu = ContextMenu('Bookmarks', self)
-
-            smooth_scrolling_action = QAction('Smooth Scrolling (Requires Restart)', self)
-            smooth_scrolling_action.setCheckable(True)
-            smooth_scrolling_action.setChecked(ibrowse.smooth_scrolling_enabled())
-            smooth_scrolling_action.triggered.connect(lambda: self.enableSmoothScrolling(smooth_scrolling_action))
-            clear_caches_action = QAction('Clear Caches', self)
-            clear_caches_action.triggered.connect(self.clearCaches)
-
-            self.menu.addAction(new_tab_action)
-            self.menu.addAction(new_window_action)
-            self.menu.addSeparator()
-            self.menu.addAction(bookmark_tab_action)
-            self.menu.addSeparator()
-            self.menu.addAction(passwords_action)
-            self.menu.addMenu(self.bookmarks_menu)
-            self.menu.addSeparator()
-            self.menu.addAction(smooth_scrolling_action)
-            self.menu.addAction(clear_caches_action)
-
-        self.bookmarks_menu.clear()
-
-        for url, name in ibrowse.bookmarks().items():
-            action = QWidgetAction(self)
-            action.url = url
-            action.triggered.connect(lambda _, u=action.url: self.search(u))
-
-            container = QWidget()
-            container.setLayout(QHBoxLayout())
-            label = QLabel(name)
-            label.setToolTip('Open this bookmark')
-            remove_btn = QPushButton(QIcon('resources/icons/ui/close_icon.svg'), '', self)
-            remove_btn.setFixedWidth(20)
-            remove_btn.setToolTip('Remove this bookmark')
-            remove_btn.clicked.connect(lambda _, u=action.url: self.removeBookmark(u, self.bookmarks_menu, action))
-
-            container.layout().addWidget(label)
-            container.layout().addStretch()
-            container.layout().addWidget(remove_btn)
-
-            action.setDefaultWidget(container)
-
-            self.bookmarks_menu.addAction(action)
-
-        self.menu.exec(self.mapToGlobal(button.pos()))
-
     def search(self, query: str):
         query = query.strip()
 
@@ -188,11 +126,15 @@ class Tab(QWidget):
                 QApplication.quit()
 
             elif query == '/help':
-                self.tab_view.addTab(self.fromHtml('resources/pages/help.html'), 'Help')
+                self.tab_view.addTab(self.fromHtml('resources/pages/help.html'), '')
                 self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
 
             elif query == '/welcome':
-                self.tab_view.addTab(self.fromHtml('resources/pages/startup.html'), 'Help')
+                self.tab_view.addTab(self.fromHtml('resources/pages/startup.html'), '')
+                self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
+
+            elif query == '/whatsnew':
+                self.tab_view.addTab(self.fromHtml('resources/pages/whats_new.html'), '')
                 self.tab_view.setCurrentIndex(self.tab_view.count() - 1)
 
             elif query == '/newtab':
@@ -230,27 +172,6 @@ class Tab(QWidget):
 
         self.quick_search_bar.exec()
 
-    def fromHtml(self, file_name: str):
-        html = ibrowse.read_html(file_name)
-
-        if html:
-            self._browser.urlChanged.disconnect(self._search_bar.setUrl)
-            self._browser.setHtml(html, QUrl('about:blank'))
-            self._browser.setFocus()
-            self._browser.urlChanged.connect(self._search_bar.setUrl)
-
-        return self
-
-    def updateTab(self):
-        index = self.tab_view.indexOf(self)
-
-        if index != -1:
-            self.tab_view.setTabText(index, (self._browser.title()[:25] + '...')
-            if len(self._browser.title()) > 25 else self._browser.title()
-                                     )
-            self.tab_view.setTabToolTip(index, self._browser.title())
-            self.tab_view.setTabIcon(index, self._browser.icon())
-
     def bookmark(self):
         dialog = CreateBookmarkDialog(self)
         dialog.url_input.setDefaultValue(self._browser.url().toString())
@@ -269,10 +190,6 @@ class Tab(QWidget):
         ibrowse.set_smooth_scrolling(action.isChecked())
 
         self.tab_view.parent().restart()
-
-    def clearCaches(self):
-        self.profile.clearHttpCache()
-        self.profile.clearAllVisitedLinks()
 
     def printPreview(self):
         if self._printer is None:
@@ -301,6 +218,21 @@ class Tab(QWidget):
 
         self._print_result_loop.quit()
 
+    def clearCaches(self):
+        self.profile.clearHttpCache()
+        self.profile.clearAllVisitedLinks()
+
+    def fromHtml(self, file_name: str):
+        html = ibrowse.read_html(file_name)
+
+        if html:
+            self._browser.urlChanged.disconnect(self._search_bar.setUrl)
+            self._browser.setHtml(html, QUrl('about:blank'))
+            self._browser.setFocus()
+            self._browser.urlChanged.connect(self._search_bar.setUrl)
+
+        return self
+
     def engineCombo(self) -> EngineSelector:
         return self._engine_combo
 
@@ -309,9 +241,6 @@ class Tab(QWidget):
 
     def page(self) -> QWebEnginePage:
         return self._page
-
-    def passwordManager(self) -> PasswordsDialog:
-        return self._passwords_dialog
 
     def browser(self) -> QWebEngineView:
         return self._browser

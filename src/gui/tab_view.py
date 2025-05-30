@@ -1,7 +1,10 @@
+import ibrowse
 from PyQt6.QtCore import QTimer, QMimeData, QUrl, Qt
-from PyQt6.QtGui import QDragLeaveEvent, QDropEvent, QDragEnterEvent, QDragMoveEvent, QKeySequence
-from PyQt6.QtWidgets import QTabBar, QTabWidget, QWidget
+from PyQt6.QtGui import QAction, QDragLeaveEvent, QDropEvent, QDragEnterEvent, QDragMoveEvent, QIcon, QKeySequence
+from PyQt6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QTabBar, QTabWidget, QWidget, QWidgetAction
 from src.gui.tab import Tab
+from src.gui.dialogs import PasswordsDialog
+from src.gui.context_menu import ContextMenu
 
 
 class TabBar(QTabBar):
@@ -58,6 +61,8 @@ class TabView(QTabWidget):
         self.setMovable(True)
         self.setTabsClosable(True)
 
+        self._passwords_dialog = PasswordsDialog(self)
+
         self.tabBarDoubleClicked.connect(self.newTab)
         self.tabCloseRequested.connect(self.closeTab)
 
@@ -103,6 +108,67 @@ class TabView(QTabWidget):
         self.addAction(bookmark_tab_action)
         self.addAction(quick_search_action)
 
+    def showMenu(self, button: QPushButton):
+        if not hasattr(self, 'menu'):
+            self.menu = ContextMenu(self)
+            self.menu.setAnimationEnabled(True)
+
+            new_tab_action = QAction('New Tab', self)
+            new_tab_action.triggered.connect(self.insertNewTab)
+            new_window_action = QAction('New Window', self)
+            new_window_action.triggered.connect(self.parent().newWindow)
+            bookmark_tab_action = QAction('Bookmark This Tab', self)
+            bookmark_tab_action.triggered.connect(lambda: self.currentTab().bookmark())
+            passwords_action = QAction('Passwords...', self)
+            passwords_action.triggered.connect(self._passwords_dialog.show)
+
+            if not hasattr(self, 'bookmarks_menu'):
+                self.bookmarks_menu = ContextMenu('Bookmarks', self)
+
+            smooth_scrolling_action = QAction('Smooth Scrolling (Requires Restart)', self)
+            smooth_scrolling_action.setCheckable(True)
+            smooth_scrolling_action.setChecked(ibrowse.smooth_scrolling_enabled())
+            smooth_scrolling_action.triggered.connect(lambda: self.currentTab().enableSmoothScrolling(smooth_scrolling_action))
+            clear_caches_action = QAction('Clear Caches', self)
+            clear_caches_action.triggered.connect(lambda: self.currentTab().clearCaches())
+
+            self.menu.addAction(new_tab_action)
+            self.menu.addAction(new_window_action)
+            self.menu.addSeparator()
+            self.menu.addAction(bookmark_tab_action)
+            self.menu.addSeparator()
+            self.menu.addAction(passwords_action)
+            self.menu.addMenu(self.bookmarks_menu)
+            self.menu.addSeparator()
+            self.menu.addAction(smooth_scrolling_action)
+            self.menu.addAction(clear_caches_action)
+
+        self.bookmarks_menu.clear()
+
+        for url, name in ibrowse.bookmarks().items():
+            action = QWidgetAction(self)
+            action.url = url
+            action.triggered.connect(lambda _, u=action.url: self.search(u))
+
+            container = QWidget()
+            container.setLayout(QHBoxLayout())
+            label = QLabel(name)
+            label.setToolTip('Open this bookmark')
+            remove_btn = QPushButton(QIcon('resources/icons/ui/close_icon.svg'), '', self)
+            remove_btn.setFixedWidth(20)
+            remove_btn.setToolTip('Remove this bookmark')
+            remove_btn.clicked.connect(lambda _, u=action.url: self.currentTab().removeBookmark(u, self.bookmarks_menu, action))
+
+            container.layout().addWidget(label)
+            container.layout().addStretch()
+            container.layout().addWidget(remove_btn)
+
+            action.setDefaultWidget(container)
+
+            self.bookmarks_menu.addAction(action)
+
+        self.menu.exec(self.currentTab().mapToGlobal(button.pos()))
+
     def startEditing(self):
         self.currentTab().searchBar().startEditing()
 
@@ -132,6 +198,17 @@ class TabView(QTabWidget):
         self.addTab(tab, '')
         self.setCurrentIndex(self.count() - 1)
 
+    def updateTab(self):
+        index = self.currentIndex()
+
+        if index != -1:
+            tab = self.currentTab()
+
+            self.setTabText(index, (tab.browser().title()[:25] + '...') if len(tab.browser().title()) > 25 else tab.browser().title())
+
+            self.setTabToolTip(index, tab.browser().title())
+            self.setTabIcon(index, tab.browser().icon())
+
     def closeTab(self, index: int):
         tab = self.widget(index)
 
@@ -147,3 +224,6 @@ class TabView(QTabWidget):
 
     def currentTab(self) -> Tab:
         return self.widget(self.currentIndex())
+
+    def passwordManager(self) -> PasswordsDialog:
+        return self._passwords_dialog

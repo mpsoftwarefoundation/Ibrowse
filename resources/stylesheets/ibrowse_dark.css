@@ -33,6 +33,7 @@ QMenu::item {
     background-color: transparent;
     color: #c2c2c2;
     border-radius: 5px;
+    min-width: 125px;
     padding: 5px;
     margin: 2px;
 }
