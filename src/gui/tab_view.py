@@ -35,7 +35,7 @@ class TabBar(QTabBar):
                 lock_tab_action = self.menu.addAction('Lock This Tab')
                 lock_tab_action.triggered.connect(lambda: self.lockTab(tab))
 
-        self.menu.exec(event.pos())
+        self.menu.exec(event.globalPos())
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
