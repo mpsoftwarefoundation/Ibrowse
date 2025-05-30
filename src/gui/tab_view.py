@@ -57,7 +57,7 @@ class TabBar(QTabBar):
 
         if mime_data.hasUrls():
             for url in mime_data.urls():
-                if url.isValid() and url.scheme().startswith("http"):
+                if url.isValid() and url.scheme().startswith('http'):
                     self._tab_view.newTabFromUrl(url)
 
             event.acceptProposedAction()

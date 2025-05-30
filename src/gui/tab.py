@@ -156,6 +156,9 @@ class Tab(QWidget):
         elif query.startswith('http'):
             pass
 
+        elif query.startswith('file:'):
+            pass
+
         elif '.com' in query:
             query = f'https://{query}'
 
@@ -163,7 +166,7 @@ class Tab(QWidget):
             query = f'https://{self._engine_combo.itemData(self._engine_combo.currentIndex())}{query.replace(' ', '+')}'
 
         self._search_bar.setText(query)
-        self._browser.load(QUrl(query))
+        self._browser.load(QUrl.fromUserInput(query))
         self._browser.setFocus()
 
     def quickSearch(self):
