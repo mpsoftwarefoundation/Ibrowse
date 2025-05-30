@@ -92,6 +92,10 @@ class TabView(QTabWidget):
         quick_search_action.setShortcut(QKeySequence('Ctrl+Q'))
         quick_search_action.triggered.connect(lambda: self.currentTab().quickSearch())
 
+        print_page_action = self.addAction('Print')
+        print_page_action.setShortcut(QKeySequence('Ctrl+P'))
+        print_page_action.triggered.connect(lambda: self.currentTab().printPreview())
+
         self.addAction(new_tab_action)
         self.addAction(new_window_action)
         self.addAction(close_tab_action)

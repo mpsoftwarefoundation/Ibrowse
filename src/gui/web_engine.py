@@ -140,7 +140,7 @@ class WebEngineView(QWebEngineView):
         clipboard.setText(image_url)
 
     def printPage(self, data: QWebEngineContextMenuRequest):
-        pass
+        self.tab_view.currentTab().printPreview()
 
     def pasteUsername(self, data: QWebEngineContextMenuRequest):
         username = None

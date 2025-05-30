@@ -3,12 +3,13 @@ import subprocess
 import sys
 import ibrowse
 from urllib.parse import urlparse
-from PyQt6.QtCore import QSize, QUrl
-from PyQt6.QtGui import QKeySequence, QAction, QIcon
+from PyQt6.QtCore import QEventLoop, QPointF, QSize, QUrl, QTemporaryFile
+from PyQt6.QtGui import QKeySequence, QAction, QIcon, QPainter
 from PyQt6.QtWebEngineCore import QWebEngineProfile, QWebEngineSettings, QWebEnginePage
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QApplication, QWidgetAction, QLabel, QMenu,
+from PyQt6.QtWidgets import (QDialog, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QApplication, QWidgetAction, QLabel, QMenu,
     QMessageBox)
+from PyQt6.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog
 from src.gui.dialogs import PasswordsDialog, CreateBookmarkDialog
 from src.gui.web_engine import WebEnginePage, WebEngineView
 from src.gui.engine_selector import EngineSelector
@@ -26,6 +27,9 @@ class Tab(QWidget):
         self.tab_view = tab_view
         self.profile = profile
         self._passwords_dialog = PasswordsDialog(self)
+
+        self._print_result_loop = QEventLoop()
+        self._printer = QPrinter()
 
         self.createUI()
         self.createBrowser()
@@ -100,6 +104,7 @@ class Tab(QWidget):
         self._browser.titleChanged.connect(self.updateTab)
         self._browser.iconChanged.connect(self.updateTab)
         self._browser.loadFinished.connect(self.updateTab)
+        self._browser.printFinished.connect(self.printFinished)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.AutoLoadIconsForPage, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.AutoLoadImages, True)
@@ -111,6 +116,67 @@ class Tab(QWidget):
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.LocalStorageEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
         self._browser.settings().setAttribute(QWebEngineSettings.WebAttribute.ScrollAnimatorEnabled, ibrowse.smooth_scrolling_enabled())
+
+    def showMenu(self, button: QPushButton):
+        if not hasattr(self, 'menu'):
+            self.menu = ContextMenu(self)
+            self.menu.setAnimationEnabled(True)
+
+            new_tab_action = QAction('New Tab', self)
+            new_tab_action.triggered.connect(self.tab_view.insertNewTab)
+            new_window_action = QAction('New Window', self)
+            new_window_action.triggered.connect(self.tab_view.parent().newWindow)
+            bookmark_tab_action = QAction('Bookmark This Tab', self)
+            bookmark_tab_action.triggered.connect(self.bookmark)
+            passwords_action = QAction('Passwords...', self)
+            passwords_action.triggered.connect(self._passwords_dialog.show)
+
+            if not hasattr(self, 'bookmarks_menu'):
+                self.bookmarks_menu = ContextMenu('Bookmarks', self)
+
+            smooth_scrolling_action = QAction('Smooth Scrolling (Requires Restart)', self)
+            smooth_scrolling_action.setCheckable(True)
+            smooth_scrolling_action.setChecked(ibrowse.smooth_scrolling_enabled())
+            smooth_scrolling_action.triggered.connect(lambda: self.enableSmoothScrolling(smooth_scrolling_action))
+            clear_caches_action = QAction('Clear Caches', self)
+            clear_caches_action.triggered.connect(self.clearCaches)
+
+            self.menu.addAction(new_tab_action)
+            self.menu.addAction(new_window_action)
+            self.menu.addSeparator()
+            self.menu.addAction(bookmark_tab_action)
+            self.menu.addSeparator()
+            self.menu.addAction(passwords_action)
+            self.menu.addMenu(self.bookmarks_menu)
+            self.menu.addSeparator()
+            self.menu.addAction(smooth_scrolling_action)
+            self.menu.addAction(clear_caches_action)
+
+        self.bookmarks_menu.clear()
+
+        for url, name in ibrowse.bookmarks().items():
+            action = QWidgetAction(self)
+            action.url = url
+            action.triggered.connect(lambda _, u=action.url: self.search(u))
+
+            container = QWidget()
+            container.setLayout(QHBoxLayout())
+            label = QLabel(name)
+            label.setToolTip('Open this bookmark')
+            remove_btn = QPushButton(QIcon('resources/icons/ui/close_icon.svg'), '', self)
+            remove_btn.setFixedWidth(20)
+            remove_btn.setToolTip('Remove this bookmark')
+            remove_btn.clicked.connect(lambda _, u=action.url: self.removeBookmark(u, self.bookmarks_menu, action))
+
+            container.layout().addWidget(label)
+            container.layout().addStretch()
+            container.layout().addWidget(remove_btn)
+
+            action.setDefaultWidget(container)
+
+            self.bookmarks_menu.addAction(action)
+
+        self.menu.exec(self.mapToGlobal(button.pos()))
 
     def search(self, query: str):
         query = query.strip()
@@ -186,67 +252,6 @@ class Tab(QWidget):
             self.tab_view.setTabToolTip(index, self._browser.title())
             self.tab_view.setTabIcon(index, self._browser.icon())
 
-    def showMenu(self, button: QPushButton):
-        if not hasattr(self, 'menu'):
-            self.menu = ContextMenu(self)
-            self.menu.setAnimationEnabled(True)
-
-            new_tab_action = QAction('New Tab', self)
-            new_tab_action.triggered.connect(self.tab_view.insertNewTab)
-            new_window_action = QAction('New Window', self)
-            new_window_action.triggered.connect(self.tab_view.parent().newWindow)
-            bookmark_tab_action = QAction('Bookmark This Tab', self)
-            bookmark_tab_action.triggered.connect(self.bookmark)
-            passwords_action = QAction('Passwords...', self)
-            passwords_action.triggered.connect(self._passwords_dialog.show)
-
-            if not hasattr(self, 'bookmarks_menu'):
-                self.bookmarks_menu = ContextMenu('Bookmarks', self)
-
-            smooth_scrolling_action = QAction('Smooth Scrolling (Requires Restart)', self)
-            smooth_scrolling_action.setCheckable(True)
-            smooth_scrolling_action.setChecked(ibrowse.smooth_scrolling_enabled())
-            smooth_scrolling_action.triggered.connect(lambda: self.enableSmoothScrolling(smooth_scrolling_action))
-            clear_caches_action = QAction('Clear Caches', self)
-            clear_caches_action.triggered.connect(self.clearCaches)
-
-            self.menu.addAction(new_tab_action)
-            self.menu.addAction(new_window_action)
-            self.menu.addSeparator()
-            self.menu.addAction(bookmark_tab_action)
-            self.menu.addSeparator()
-            self.menu.addAction(passwords_action)
-            self.menu.addMenu(self.bookmarks_menu)
-            self.menu.addSeparator()
-            self.menu.addAction(smooth_scrolling_action)
-            self.menu.addAction(clear_caches_action)
-
-        self.bookmarks_menu.clear()
-
-        for url, name in ibrowse.bookmarks().items():
-            action = QWidgetAction(self)
-            action.url = url
-            action.triggered.connect(lambda _, u=action.url: self.search(u))
-
-            container = QWidget()
-            container.setLayout(QHBoxLayout())
-            label = QLabel(name)
-            label.setToolTip('Open this bookmark')
-            remove_btn = QPushButton(QIcon('resources/icons/ui/close_icon.svg'), '', self)
-            remove_btn.setFixedWidth(20)
-            remove_btn.setToolTip('Remove this bookmark')
-            remove_btn.clicked.connect(lambda _, u=action.url: self.removeBookmark(u, self.bookmarks_menu, action))
-
-            container.layout().addWidget(label)
-            container.layout().addStretch()
-            container.layout().addWidget(remove_btn)
-
-            action.setDefaultWidget(container)
-
-            self.bookmarks_menu.addAction(action)
-
-        self.menu.exec(self.mapToGlobal(button.pos()))
-
     def bookmark(self):
         dialog = CreateBookmarkDialog(self)
         dialog.url_input.setDefaultValue(self._browser.url().toString())
@@ -269,6 +274,30 @@ class Tab(QWidget):
     def clearCaches(self):
         self.profile.clearHttpCache()
         self.profile.clearAllVisitedLinks()
+
+    def printPreview(self):
+        preview = QPrintPreviewDialog(self._printer, self._browser)
+        preview.paintRequested.connect(self.printDocument)
+
+        preview.exec()
+
+    def printDocument(self, printer: QPrinter):
+        self._browser.print(printer)
+
+        self._print_result_loop.exec(QEventLoop.ProcessEventsFlag.ExcludeUserInputEvents)
+
+    def printFinished(self, success: bool):
+        if not success:
+            painter = QPainter()
+
+            if painter.begin(self._printer):
+                font = painter.font()
+                font.setPixelSize(20)
+                painter.setFont(font)
+                painter.drawText(QPointF(10,25), 'Could not generate print preview.')
+                painter.end()
+
+        self._print_result_loop.quit()
 
     def engineCombo(self) -> EngineSelector:
         return self._engine_combo
