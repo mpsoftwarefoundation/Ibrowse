@@ -67,12 +67,17 @@ class TabBar(QTabBar):
     def lockTab(self, tab):
         tab.setLocked(True)
         index = self._tab_view.indexOf(tab)
+        keep_open = False
+
+        if self.currentIndex() == index:
+            keep_open = True
 
         self.setTabEnabled(index, False)
         self.setTabIcon(index, QIcon('resources/icons/ui/locked_icon.svg'))
         self.setTabToolTip(index, 'This tab is locked')
 
-        self.setCurrentIndex(index)
+        if keep_open:
+            self.setCurrentIndex(index)
 
     def unlockTab(self, tab):
         tab.setLocked(False)
