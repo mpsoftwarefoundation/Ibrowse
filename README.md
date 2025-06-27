@@ -8,9 +8,9 @@ _"Yeah man, Ibrowse!"_
 ## Overview
 Ibrowse is an experimental browser for those who love:
 
-- **Minimalism 🎛️**
+- **Unique Projects 🎛️**
 
-Ibrowse has a very lightweight UI and doesn't bombard you with actions and widgets.
+Ibrowse changes the game with **centered tabs**, **true privacy**, and **quick access searching**.
 
 - **Security 🔐**
 
