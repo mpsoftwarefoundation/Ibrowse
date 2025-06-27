@@ -6,7 +6,7 @@ _"Yeah man, Ibrowse!"_
 <img src="resources/screenshots/ibrowse_startup.png" style="border-radius: 20px; width: auto;">
 
 ## Overview
-Ibrowse is the browser for those who love:
+Ibrowse is an experimental browser for those who love:
 
 - **Minimalism 🎛️**
 
